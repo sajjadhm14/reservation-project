@@ -1,4 +1,4 @@
-@extends('consulter.dashboard.consulter-dashboard')
+@extends('consulter.dashboard.dashboard')
 
 @section('content')
 
