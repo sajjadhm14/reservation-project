@@ -11,7 +11,7 @@ class ConsulterDashboardController extends Controller
     public function index()
     {
 
-        return view('consulter.dashboard.dashboard');
+        return view('consulter.dashboard.pages.profile');
     }
 
     public function logout(Request $request)
