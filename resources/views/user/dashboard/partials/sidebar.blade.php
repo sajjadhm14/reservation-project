@@ -17,19 +17,19 @@
                     <i class="link-icon" data-feather="box"></i>
                     <span class="link-title">Dashboard</span>
                 </a>
-{{--            </li>--}}
-{{--            <li class="nav-item">--}}
-{{--                <a href="{{route('reservation.index')}}" class="nav-link">--}}
-{{--                    <i class="link-icon" data-feather="box"></i>--}}
-{{--                    <span class="link-title">Make Reservation</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
-{{--            <li class="nav-item">--}}
-{{--                <a href="{{route('submit')}}" class="nav-link">--}}
-{{--                    <i class="link-icon" data-feather="box"></i>--}}
-{{--                    <span class="link-title">Submit Reservation</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
+            </li>
+            <li class="nav-item">
+                <a href="{{route('reservation')}}" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">Make Reservation</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('submit')}}" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">Submit Reservation</span>
+                </a>
+            </li>
 {{--            <li class="nav-item">--}}
 {{--                <a href="{{route('payment.index')}}" class="nav-link">--}}
 {{--                    <i class="link-icon" data-feather="box"></i>--}}
