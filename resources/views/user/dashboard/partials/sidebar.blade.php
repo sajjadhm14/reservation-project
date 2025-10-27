@@ -19,6 +19,13 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{route('user.dashboard')}}" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a href="{{route('reservation')}}" class="nav-link">
                     <i class="link-icon" data-feather="box"></i>
                     <span class="link-title">Make Reservation</span>
@@ -30,6 +37,7 @@
                     <span class="link-title">Submit Reservation</span>
                 </a>
             </li>
+
 {{--            <li class="nav-item">--}}
 {{--                <a href="{{route('payment.index')}}" class="nav-link">--}}
 {{--                    <i class="link-icon" data-feather="box"></i>--}}
