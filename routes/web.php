@@ -27,6 +27,11 @@ Route::prefix('user')->middleware('auth')->group(function () {
         Route::get('logout' , 'logout')->name('user.logout');
     });
 
+    Route::controller(\App\Http\Controllers\User\Dashboard\ReservationController::class)->group(function () {
+        Route::get('reservations' , 'index')->name('reservation');
+        Route::post('reservations/post' , 'reservationPost')->name('reservation.post');
+    });
+
 });
 
 // routes for consulter auth
