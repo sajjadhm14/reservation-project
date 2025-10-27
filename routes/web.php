@@ -31,7 +31,13 @@ Route::prefix('user')->middleware('auth')->group(function () {
         Route::get('reservations' , 'index')->name('reservation');
         Route::post('reservations/post' , 'reservationPost')->name('reservation.post');
     });
-
+    Route::controller(\App\Http\Controllers\User\Dashboard\SubmitReservationController::class)->group(function () {
+       Route::get('submit' , 'index')->name('submit');
+       Route::post('submit/post/{id}' , 'submitPost')->name('submit.post');
+    });
+    Route::get('ss', function(){
+        return 2;
+    })->name('ss');
 });
 
 // routes for consulter auth
