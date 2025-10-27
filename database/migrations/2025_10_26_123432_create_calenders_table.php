@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('consulter_id')->constrained('consulters')->onDelete('cascade');
             $table->string('date');
-
+            $table->string('start_time');
+            $table->string('end_time');
             $table->timestamps();
         });
     }
