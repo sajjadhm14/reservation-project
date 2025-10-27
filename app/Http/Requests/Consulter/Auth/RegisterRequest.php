@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
-            'specialty' => ['required', 'string', 'max:255'],
+            'specialty' => ['required'],
         ];
     }
 }
