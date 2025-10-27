@@ -18,12 +18,12 @@
                     <span class="link-title">Dashboard</span>
                 </a>
             </li>
-{{--            <li class="nav-item">--}}
-{{--                <a href="{{route('consulter.calender')}}" class="nav-link">--}}
-{{--                    <i class="link-icon" data-feather="box"></i>--}}
-{{--                    <span class="link-title">Calender</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
+            <li class="nav-item">
+                <a href="{{route('consulter.calender')}}" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">Make Reservation Time</span>
+                </a>
+            </li>
 {{--            <li class="nav-item">--}}
 {{--                <a href="{{route('check.reservation')}}" class="nav-link">--}}
 {{--                    <i class="link-icon" data-feather="box"></i>--}}
