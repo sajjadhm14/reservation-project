@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 //routes for user auth
 Route::prefix('user/auth')->group(function () {
 
-    Route::prefix(\App\Http\Controllers\User\Auth\RegisterController::class)->group(function () {
+    Route::controller(\App\Http\Controllers\User\Auth\RegisterController::class)->group(function () {
         Route::get('register' ,  'index')->name('user.register');
         Route::post('register/post' , 'registerPost')->name('user.register.post');
     });
@@ -47,6 +47,12 @@ Route::prefix('consulter')->middleware('consulter_middleware')->group(function (
     Route::controller(\App\Http\Controllers\Consulter\Dashboard\ConsulterDashboardController::class)->group(function () {
         Route::get('dashboard' , 'index')->name('consulter.dashboard');
         Route::get('logout' , 'logout')->name('consulter.logout');
+    });
+
+    Route::controller(\App\Http\Controllers\Consulter\Dashboard\CalenderController::class)->group(function () {
+        Route::get('calender' , 'index')->name('consulter.calender');
+        Route::post('calender/post' , 'calenderPost')->name('consulter.set.calender');
+        Route::delete('calender/delete/{id}' , 'destroy')->name('consulter.delete.calender');
     });
 
 });
