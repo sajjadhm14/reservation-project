@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('consulter_id')->constrained('consulters')->onDelete('cascade');
+            $table->foreignId('calender_id')->constrained('calenders')->onDelete('cascade');
             $table->string('status')->default('pending');
+            $table->string('amount');
             $table->string('date');
             $table->string('start_time');
             $table->string('end_time');
