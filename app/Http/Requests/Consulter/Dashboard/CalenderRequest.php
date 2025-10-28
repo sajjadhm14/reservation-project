@@ -25,6 +25,7 @@ class CalenderRequest extends FormRequest
             'date' => 'required',
             'start_time' => 'required',
             'end_time' => 'required',
+            'amount' => 'required',
         ];
     }
 }
