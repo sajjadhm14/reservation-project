@@ -10,7 +10,7 @@
 
                         <div class="d-flex flex-column gap-3">
                             {{-- Consultant Card --}}
-                            @foreach($consulters as $key => $consulter)
+                            @foreach($consulters as $consulter)
                                 <div class="card shadow-sm w-100">
                                     <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                                         <div>
@@ -21,20 +21,21 @@
                                             <button type="button"
                                                     class="btn btn-primary px-4 py-2 fw-bold btn-reserve"
                                                     data-id="{{ $consulter->id }}"
-                                                    data-name="{{ $consulter->name }}"
-                                                    style="font-size: 15px;">
+                                                    data-name="{{ $consulter->name }}">
                                                 Reserve
                                             </button>
                                         </div>
                                     </div>
 
-                                    {{-- Available times --}}
+                                    {{-- Available Times (hidden) --}}
                                     <div class="available-times d-none" id="times-{{ $consulter->id }}">
                                         @foreach($calenders->where('consulter_id', $consulter->id) as $calender)
                                             <div class="time-slot"
+                                                 data-calender-id="{{ $calender->id }}"
                                                  data-date="{{ \Carbon\Carbon::parse($calender->date)->format('Y-m-d') }}"
                                                  data-start="{{ $calender->start_time }}"
-                                                 data-end="{{ $calender->end_time }}">
+                                                 data-end="{{ $calender->end_time }}"
+                                                 data-amount="{{ $calender->amount }}"> {{-- ✅ consistent with Reservation model --}}
                                             </div>
                                         @endforeach
                                     </div>
@@ -67,7 +68,8 @@
                             <div class="col-md-4">
                                 <div class="card border shadow-sm text-center p-3 available-slot" style="cursor:pointer;">
                                     <h6 class="mb-1 slot-date"></h6>
-                                    <p class="text-muted mb-2 slot-time"></p>
+                                    <p class="text-muted mb-1 slot-time"></p>
+                                    <p class="fw-bold text-success mb-2 slot-amount"></p>
                                     <button type="button" class="btn btn-sm btn-outline-primary reserve-slot-btn">Reserve</button>
                                 </div>
                             </div>
@@ -80,12 +82,13 @@
         </div>
     </div>
 
+    {{-- ✅ Script Section --}}
     <script>
         $(document).ready(function () {
             const reservationModalEl = document.getElementById('reservationModal');
             const reservationModal = new bootstrap.Modal(reservationModalEl);
 
-            // Show modal on Reserve button click
+            // 🔹 Show modal with consultant's available times
             $(document).on('click', '.btn-reserve', function () {
                 const consulterId = $(this).data('id');
                 const consulterName = $(this).data('name');
@@ -97,9 +100,11 @@
                 const template = document.getElementById('timeSlotTemplate').content;
 
                 slots.each(function () {
+                    const calenderId = $(this).data('calender-id');
                     const date = $(this).data('date');
                     const start = $(this).data('start');
                     const end = $(this).data('end');
+                    const amount = $(this).data('amount');
 
                     const clone = document.importNode(template, true);
                     const $card = $(clone).find('.available-slot');
@@ -108,11 +113,14 @@
                         'data-date': date,
                         'data-start': start,
                         'data-end': end,
-                        'data-consulter-id': consulterId
+                        'data-consulter-id': consulterId,
+                        'data-calender-id': calenderId,
+                        'data-amount': amount
                     });
 
                     $card.find('.slot-date').text(date);
                     $card.find('.slot-time').text(`${start} - ${end}`);
+                    $card.find('.slot-amount').text(`Fee: ${amount} Dollars`);
 
                     $('#availableTimes').append($card.closest('.col-md-4'));
                 });
@@ -120,14 +128,18 @@
                 reservationModal.show();
             });
 
-            // Handle reservation click inside modal
+            // 🔹 Handle Reserve click
             $(document).on('click', '.reserve-slot-btn', function () {
                 const $btn = $(this);
                 const card = $btn.closest('.available-slot');
-                const date = card.data('date');
-                const start = card.data('start');
-                const end = card.data('end');
-                const consulterId = card.data('consulter-id');
+                const data = {
+                    consulter_id: card.data('consulter-id'),
+                    calender_id: card.data('calender-id'),
+                    date: card.data('date'),
+                    start_time: card.data('start'),
+                    end_time: card.data('end'),
+                    amount: card.data('amount')
+                };
 
                 $btn.prop('disabled', true).text('Reserving...');
 
@@ -138,20 +150,15 @@
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({
-                        consulter_id: consulterId,
-                        date: date,
-                        start_time: start,
-                        end_time: end
-                    })
+                    body: JSON.stringify(data)
                 })
                     .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            toastr.success(`Reserved for ${date} (${start} - ${end})`);
+                    .then(resp => {
+                        if (resp.success) {
+                            toastr.success(`Reserved for ${data.date} (${data.start_time} - ${data.end_time}) — Fee: ${data.amount} تومان`);
                             card.closest('.col-md-4').fadeOut(300, function () { $(this).remove(); });
                         } else {
-                            toastr.error(data.message || 'Reservation failed!');
+                            toastr.error(resp.message || 'Reservation failed!');
                         }
                     })
                     .catch(() => toastr.error('Something went wrong!'))
