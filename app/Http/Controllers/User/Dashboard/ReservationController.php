@@ -17,8 +17,8 @@ class ReservationController extends Controller
     public function index()
     {
         $consulters = Consulter::all();
-        $calenders = Calender::all();
-        return view('user.dashboard.pages.reservation' , compact('consulters' , 'calenders'));
+        $calenders = Calender::where('status', 'pending')->get();
+        return view('user.dashboard.pages.reservation' , compact('consulters'  , 'calenders'));
     }
 
     public function reservationPost(ReservationRequest $request)
@@ -27,6 +27,8 @@ class ReservationController extends Controller
         $request->validated();
 
         $exists = Reservation::where('consulter_id' , $request->consulter_id)
+                               ->where('calender_id' , $request->calender_id)
+                               ->where('amount' , $request->amount)
                                ->where('date' , $request->date)
                                ->where('start_time' , $request->start_time)
                                ->where('end_time' , $request->end_time)
@@ -41,7 +43,9 @@ class ReservationController extends Controller
         $reservation = Reservation::create([
            'user_id' => $user,
            'consulter_id' => $request->consulter_id,
+            'calender_id'=> $request->calender_id,
             'date'=> $request->date,
+            'amount'=>$request->amount,
             'start_time' =>$request->start_time,
             'end_time'  => $request->end_time,
         ]);
