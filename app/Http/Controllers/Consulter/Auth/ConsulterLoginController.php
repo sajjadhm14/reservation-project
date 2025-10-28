@@ -11,6 +11,9 @@ class ConsulterLoginController extends Controller
 {
     public function index()
     {
+        if(Auth::guard('consulter')->check()){
+            return redirect()->route('consulter.dashboard');
+        }
         return view('consulter.auth.consulter-login');
     }
 
