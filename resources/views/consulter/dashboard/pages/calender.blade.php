@@ -24,6 +24,12 @@
                         <input type="time" id="end_time" name="end_time" class="form-control" required>
                     </div>
 
+                    {{-- 💰 Amount Field --}}
+                    <div class="col-md-4">
+                        <label for="amount" class="form-label">Amount (per session)</label>
+                        <input type="number" id="amount" name="amount" class="form-control" placeholder="Enter amount" min="0" required>
+                    </div>
+
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-success mt-3" id="addTimeBtn">Add Time</button>
                     </div>
@@ -38,6 +44,7 @@
                         <th>Date</th>
                         <th>Start Time</th>
                         <th>End Time</th>
+                        <th>Amount</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -47,13 +54,14 @@
                             <td>{{ $calender->date }}</td>
                             <td>{{ $calender->start_time }}</td>
                             <td>{{ $calender->end_time }}</td>
+                            <td>{{ $calender->amount ?? '—' }}</td>
                             <td>
                                 <button class="btn btn-sm btn-danger delete-btn">Delete</button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No available times yet.</td>
+                            <td colspan="5" class="text-center text-muted">No available times yet.</td>
                         </tr>
                     @endforelse
                     </tbody>
@@ -85,13 +93,13 @@
                         alert('✅ Time added successfully!');
                         form.reset();
 
-                        // Optionally, append new row dynamically
                         if (data.newCalender) {
                             const newRow = `
                                 <tr data-id="${data.newCalender.id}">
                                     <td>${data.newCalender.date}</td>
                                     <td>${data.newCalender.start_time}</td>
                                     <td>${data.newCalender.end_time}</td>
+                                    <td>${data.newCalender.amount}</td>
                                     <td>
                                         <button class="btn btn-sm btn-danger delete-btn">Delete</button>
                                     </td>
