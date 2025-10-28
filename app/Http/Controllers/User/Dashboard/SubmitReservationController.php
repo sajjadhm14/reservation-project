@@ -23,7 +23,16 @@ class SubmitReservationController extends Controller
 
         // If status is Cancelled, delete the reservation instead of updating status
         if($status === 'Cancelled') {
+
+            $calender=$submit->calender;
+
             $submit->delete();
+
+            if($calender) {
+                $calender->status  = 'pending';
+                $calender->save();
+            }
+
 
             return response()->json([
                 'status' => 200,
@@ -31,8 +40,15 @@ class SubmitReservationController extends Controller
             ]);
         }
 
+
+
         $submit->status = $status;
         $submit->save();
+
+        if($submit->calender) {
+            $submit -> calender->status=$status;
+            $submit -> calender->save();
+        }
 
         return response()->json([
             'status' => 200
