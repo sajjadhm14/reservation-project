@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\User\Dashboard\DashboardController;
+use App\Http\Controllers\User\Dashboard\PaymentController;
+use App\Http\Controllers\User\Dashboard\WalletController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -12,11 +14,11 @@ Route::prefix('user/auth')->group(function () {
         Route::post('register/post' , 'registerPost')->name('user.register.post');
     });
 
-    Route::controller(\App\Http\Controllers\User\Auth\LoginController::class)->group(function () {
-        Route::get('login' , 'index')->name('user.login');
-        Route::post('login/post' ,  'loginPost')->name('user.login.post');
-    });
+});
 
+Route::controller(\App\Http\Controllers\User\Auth\LoginController::class)->group(function () {
+    Route::get('/' , 'index')->name('user.login');
+    Route::post('login/post' ,  'loginPost')->name('user.login.post');
 });
 
 //routes for user
@@ -35,9 +37,15 @@ Route::prefix('user')->middleware('user_middleware')->group(function () {
        Route::get('submit' , 'index')->name('submit');
        Route::post('submit/post/{id}' , 'submitPost')->name('submit.post');
     });
-    Route::get('ss', function(){
-        return 2;
-    })->name('ss');
+
+    Route::controller(PaymentController::class)->group(function () {
+       Route::get('payment','index')->name('payment');
+    });
+
+    Route::controller(WalletController::class)->group(function () {
+       Route::get('wallet' , 'index')->name('wallet');
+    });
+
 });
 
 // routes for consulter auth
