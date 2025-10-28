@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Dashboard\SubmitRequest;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubmitReservationController extends Controller
 {
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
-        $submits = Reservation::all();
+        $submits = Reservation::where('user_id' , Auth::guard('web')->id())->get();
         return view ('user.dashboard.pages.submit', compact('submits'));
     }
 
