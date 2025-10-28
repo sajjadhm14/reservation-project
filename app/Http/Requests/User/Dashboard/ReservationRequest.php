@@ -23,7 +23,8 @@ class ReservationRequest extends FormRequest
     {
         return [
             'consulter_id' => 'required',
-
+            'calender_id' => 'required',
+            'amount' => 'required',
         ];
     }
 }
