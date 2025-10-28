@@ -20,7 +20,7 @@ Route::prefix('user/auth')->group(function () {
 });
 
 //routes for user
-Route::prefix('user')->middleware('auth')->group(function () {
+Route::prefix('user')->middleware('user_middleware')->group(function () {
     // routes for user dashboard
     Route::controller(\App\Http\Controllers\User\Dashboard\DashboardController::class)->group(function () {
         Route::get('dashboard' , 'index')->name('user.dashboard');
