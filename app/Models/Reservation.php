@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Reservation extends Model
 {
@@ -12,7 +13,10 @@ class Reservation extends Model
         'consulter_name',
         'consulter_speciality',
         'user_id',
+        'calender_id',
         'date',
+        'amount',
+        'status',
         'start_time',
         'end_time',
     ];
@@ -25,5 +29,9 @@ class Reservation extends Model
     public function consulter():belongsTo
     {
         return $this->belongsTo(Consulter::class);
+    }
+    public function calender():belongsTo
+    {
+        return $this->belongsTo(Calender::class);
     }
 }
