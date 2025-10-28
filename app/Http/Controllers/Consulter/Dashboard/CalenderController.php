@@ -23,6 +23,8 @@ class CalenderController extends Controller
 
         $calender = Calender::create([
             'consulter_id' => $id,
+            'status'=> 'pending',
+            'amount' => $data['amount'],
             'date' => $data['date'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
