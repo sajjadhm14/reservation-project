@@ -23,6 +23,6 @@ class DashboardController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('user/auth/login');
+        return redirect('/');
     }
 }
