@@ -22,7 +22,7 @@ class WalletRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'current_balance' => 'required',
+            //
         ];
     }
 }
