@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('current_balance');
-            $table->string('remaining_balance');
+            $table->string('current_balance')->default(0);
+            $table->string('remaining_balance')->default(0);
             $table->timestamps();
         });
     }
