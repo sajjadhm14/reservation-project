@@ -22,13 +22,13 @@
                             </h4>
                         </div>
 
-                        {{-- Payment Form --}}
+                        {{-- Transaction Form --}}
                         <form action="{{route('wallet.charge.post')}}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="amount" class="form-label fw-semibold">Enter Amount to Charge ($)</label>
                                 <input type="number" name="amount" id="amount" class="form-control form-control-lg"
-                                       min="1" required placeholder="e.g. 50">
+                                       min="1" required placeholder="Enter Here">
                             </div>
 
                             <div class="mt-4 text-end">
