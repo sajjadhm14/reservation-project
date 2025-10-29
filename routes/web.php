@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\User\Dashboard\DashboardController;
 use App\Http\Controllers\User\Dashboard\PaymentController;
-use App\Http\Controllers\User\Dashboard\WalletController;
+use App\Http\Controllers\User\Transactions\WalletController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -38,15 +37,13 @@ Route::prefix('user')->middleware('user_middleware')->group(function () {
        Route::post('submit/post/{id}' , 'submitPost')->name('submit.post');
     });
 
-    Route::controller(PaymentController::class)->group(function () {
-       Route::get('payment','index')->name('payment');
-    });
-
     Route::controller(WalletController::class)->prefix('wallet')->group(function () {
        Route::get('/' , 'index')->name('wallet');
        Route::get('charge' , 'walletCharge')->name('wallet.charge');
        Route::post('charge/post' , 'walletPost')->name('wallet.charge.post');
     });
+
+
 
 });
 
