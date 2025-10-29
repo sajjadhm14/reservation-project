@@ -42,8 +42,10 @@ Route::prefix('user')->middleware('user_middleware')->group(function () {
        Route::get('payment','index')->name('payment');
     });
 
-    Route::controller(WalletController::class)->group(function () {
-       Route::get('wallet' , 'index')->name('wallet');
+    Route::controller(WalletController::class)->prefix('wallet')->group(function () {
+       Route::get('/' , 'index')->name('wallet');
+       Route::get('charge' , 'walletCharge')->name('wallet.charge');
+       Route::post('charge/post' , 'walletPost')->name('wallet.charge.post');
     });
 
 });
