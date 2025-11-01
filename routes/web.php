@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\User\Dashboard\PaymentController;
+use App\Http\Controllers\User\Transactions\GatewayController;
 use App\Http\Controllers\User\Transactions\WalletController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,12 @@ Route::prefix('user')->middleware('user_middleware')->group(function () {
        Route::post('charge/post' , 'walletPost')->name('wallet.charge.post');
     });
 
+    Route::controller(GatewayController::class)->prefix('payment')->group(function () {
+        Route::get('/' , 'index')->name('payment');
+        Route::post('/payment/reservation', 'paymentPost')->name('payment.post');
+        Route::get('/callback',  'callback')->name('payment.callback');
+
+    });
 
 
 });
