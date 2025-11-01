@@ -23,7 +23,7 @@
                         </div>
 
                         {{-- Transaction Form --}}
-                        <form action="{{route('wallet.charge.post')}}" method="POST">
+                        <form action="{{route('payment.post')}}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="amount" class="form-label fw-semibold">Enter Amount to Charge ($)</label>
@@ -32,7 +32,7 @@
                             </div>
 
                             <div class="mt-4 text-end">
-                                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
+                                <button type="submit"  class="btn btn-primary px-4 py-2 fw-bold">
                                     Proceed to Payment
                                 </button>
                             </div>
