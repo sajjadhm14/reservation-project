@@ -47,6 +47,11 @@
                                 Charge Account
                             </a>
                         </div>
+                        <div class="text-end mt-3 mb-4">
+                            <a href="{{ route('wallet.charge') }}" class="btn btn-primary px-4 py-2 fw-bold">
+                                Pay for reservation
+                            </a>
+                        </div>
 
 
                         <!-- ===================== Account History Section ===================== -->
