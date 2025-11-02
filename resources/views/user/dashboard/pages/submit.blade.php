@@ -42,7 +42,7 @@
                                                         onclick="updateStatus(this, 'Cancelled', {{ $submit->id }})">Cancel</button>
                                             @elseif($submit->status === 'Cancelled')
                                                 <button class="btn btn-danger btn-sm" disabled>Cancelled</button>
-                                            @elseif($submit->status === 'Paid')
+                                            @elseif($submit->status === 'paid')
                                                 <button class="btn btn-primary btn-sm" disabled>Paid</button>
                                             @else
                                                 <button class="btn btn-success btn-sm me-1"
