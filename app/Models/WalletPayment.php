@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Payment extends Model
+class WalletPayment extends Model
 {
     protected $fillable = [
         'wallet_id',
         'amount',
-        'description',
+        'status',
         'user_id',
         'ref_id',
         'ref_number',
