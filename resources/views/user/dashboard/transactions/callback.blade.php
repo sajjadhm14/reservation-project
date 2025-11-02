@@ -6,9 +6,9 @@
             <div class="col-12 col-md-8 col-lg-6">
                 <div class="card shadow-sm border-0 rounded-3 mt-5">
                     <div class="card-body text-center py-5">
-                            @php
-                                $callback =   \App\Models\Payment::latest()->first();
-                            @endphp
+                        @php
+                            $callback =   \App\Models\WalletPayment::latest()->first();
+                        @endphp
                         {{-- ✅ Tick Icon --}}
                         <div class="mb-4">
                             <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
