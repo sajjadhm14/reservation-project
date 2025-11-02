@@ -11,7 +11,7 @@
                             Mock Zarinpal Payment
                         </h4>
 
-                        {{-- Payment Summary --}}
+                        {{-- WalletPayment Summary --}}
 
 
                         <div class="alert alert-info fw-semibold mb-4">
@@ -21,12 +21,12 @@
 
                         {{-- Action Buttons --}}
                         <div class="d-flex justify-content-center gap-3 mt-4">
-                            <a href="{{ route('payment.post', ['Status' => 'OK', 'Authority' => $ref ?? 'mock123', 'reservation_id' => $reservation_id ?? 0]) }}"
+                            <a href="{{ route('payment.callback', ['Status' => 'success', 'Authority' => $ref ?? 'mock123', 'reservation_id' => $reservation_id ?? 0]) }}"
                                class="btn btn-success px-4 py-2 fw-bold rounded-pill">
                                 Pay Now
                             </a>
 
-                            <a href="{{ route('payment.post', ['Status' => 'NOK', 'Authority' => $ref ?? 'mock123', 'reservation_id' => $reservation_id ?? 0]) }}"
+                            <a href="{{ route('payment.callback', ['Status' => 'cancelled', 'Authority' => $ref ?? 'mock123', 'reservation_id' => $reservation_id ?? 0]) }}"
                                class="btn btn-outline-danger px-4 py-2 fw-bold rounded-pill">
                                 Cancel
                             </a>
