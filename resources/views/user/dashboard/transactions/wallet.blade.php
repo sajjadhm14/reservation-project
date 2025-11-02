@@ -12,7 +12,9 @@
 
                         @php
                             $wallet = \App\Models\Wallet::where('user_id', auth()->id())->first();
-                            $reservations = \App\Models\Reservation::where('user_id', auth()->id())->get();
+                            $reservations = \App\Models\Reservation::where('user_id', auth()->id())
+                            ->where('status' , 'approved')
+                            ->get();
 
                             $currentBalance = $wallet->current_balance ?? 0;
                             $totalPayments = $reservations->sum('amount');
@@ -48,7 +50,7 @@
                             </a>
                         </div>
                         <div class="text-end mt-3 mb-4">
-                            <a href="{{ route('wallet.charge') }}" class="btn btn-primary px-4 py-2 fw-bold">
+                            <a href="{{ route('reservation.payment') }}" class="btn btn-primary px-4 py-2 fw-bold">
                                 Pay Reservation
                             </a>
                         </div>
