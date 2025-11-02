@@ -41,14 +41,18 @@ Route::prefix('user')->middleware('user_middleware')->group(function () {
     Route::controller(WalletController::class)->prefix('wallet')->group(function () {
        Route::get('/' , 'index')->name('wallet');
        Route::get('charge' , 'walletCharge')->name('wallet.charge');
-       Route::post('charge/post' , 'walletPost')->name('wallet.charge.post');
     });
 
     Route::controller(GatewayController::class)->prefix('payment')->group(function () {
         Route::get('/' , 'index')->name('payment');
-        Route::post('/payment/reservation', 'paymentPost')->name('payment.post');
+        Route::post('post', 'paymentPost')->name('payment.post');
         Route::get('/callback',  'callback')->name('payment.callback');
 
+    });
+//
+    Route::controller(\App\Http\Controllers\User\Transactions\ReservationPaymentController::class)->group(function () {
+        Route::get('reserve-payment' , 'index')->name('reservation.payment');
+        Route::post('reserve-payment/post/{id}' , 'paymentPost')->name('reservation.payment.post');
     });
 
 
