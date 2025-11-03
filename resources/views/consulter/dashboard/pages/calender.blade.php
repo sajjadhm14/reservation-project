@@ -38,14 +38,14 @@
                 <hr class="my-4">
 
                 <h5 class="mb-3">My Available Times</h5>
-                <table class="table table-striped">
+                <table class="table table-striped align-middle">
                     <thead>
                     <tr>
                         <th>Date</th>
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Amount</th>
-                        <th>Action</th>
+                        <th>Status / Action</th>
                     </tr>
                     </thead>
                     <tbody id="timeTable">
@@ -56,7 +56,14 @@
                             <td>{{ $calender->end_time }}</td>
                             <td>{{ $calender->amount ?? '—' }}</td>
                             <td>
-                                <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                @if($calender->status === 'pending')
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+
+                                @elseif($calender->status === 'Approved' || $calender->status === 'paid')
+                                    <span class="badge bg-success">Reserved</span>
+                                @else
+                                    <span class="badge bg-secondary">—</span>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -95,15 +102,15 @@
 
                         if (data.newCalender) {
                             const newRow = `
-                                <tr data-id="${data.newCalender.id}">
-                                    <td>${data.newCalender.date}</td>
-                                    <td>${data.newCalender.start_time}</td>
-                                    <td>${data.newCalender.end_time}</td>
-                                    <td>${data.newCalender.amount}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn">Delete</button>
-                                    </td>
-                                </tr>`;
+                            <tr data-id="${data.newCalender.id}">
+                                <td>${data.newCalender.date}</td>
+                                <td>${data.newCalender.start_time}</td>
+                                <td>${data.newCalender.end_time}</td>
+                                <td>${data.newCalender.amount}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                </td>
+                            </tr>`;
                             document.getElementById('timeTable').insertAdjacentHTML('beforeend', newRow);
                         }
                     } else {
