@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -56,8 +57,16 @@ class User extends Authenticatable
         return $this->hasMany(Reservation::class);
     }
 
-    public function payments():hasMany
+    public function walletPayments():hasMany
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(WalletPayment::class);
+    }
+    public function wallet():HasOne
+    {
+        return $this->hasOne(Wallet::class);
+    }
+    public function reservationPayments():HasOne
+    {
+        return $this->hasOne(ReservationPayment::class);
     }
 }
