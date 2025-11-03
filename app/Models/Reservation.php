@@ -34,4 +34,8 @@ class Reservation extends Model
     {
         return $this->belongsTo(Calender::class);
     }
+    public function reservationPayment():HasOne
+    {
+        return $this->hasOne(ReservationPayment::class);
+    }
 }
