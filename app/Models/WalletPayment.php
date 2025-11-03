@@ -16,5 +16,15 @@ class WalletPayment extends Model
         'ref_number',
     ];
 
+    public function user():BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function wallet():BelongsTo
+    {
+        return $this->belongsTo(Wallet::class);
+    }
+
 
 }
