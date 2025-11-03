@@ -84,7 +84,7 @@ class GatewayController extends Controller
                'message' => 'Your Payment done successfully',
                'alert-type' => 'success',
            ];
-           return redirect()->route('wallet')->with($notification);
+           return view('user.dashboard.transactions.callback' , $notification);
 
    }
 
