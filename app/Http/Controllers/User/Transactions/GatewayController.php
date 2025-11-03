@@ -22,25 +22,69 @@ class GatewayController extends Controller
     }
    public function paymentPost(PaymentRequest $request)
    {
-            $user = auth()->user();
-            $wallet = Wallet::firstOrCreate(['user_id' => $user->id]);
+            $user = Auth()->user();
+            $wallet = Wallet::firstOrCreate(['user_id'=>$user->id]);
             $amount = $request->amount;
-            $ref = $request->random_int(100000, 999999);
+            $ref_id = random_int(100000, 999999);
+            $ref_number = Str::random(6);
+
+            $payment = WalletPayment::create([
+               'wallet_id' => $wallet->id,
+               'amount' => $amount,
+               'ref_id' => $ref_id,
+               'user_id' =>$user->id,
+               'status' => 'pending',
+               'ref_number' => $ref_number,
+            ]);
 
 
-           return view('user.dashboard.transactions.payment');
+
+
+           return view('user.dashboard.transactions.payment' , [
+               'amount' => $amount,
+               'ref_id' => $ref_id,
+           ]);
    }
 
    public function callback(PaymentRequest $request)
    {
-       $wallet = WalletPayment::get();
-       if ($wallet->status !== 'success') {
-           return view('user.dashboard.transactions.wallet');
-       }elseif ($wallet->status == 'success') {
-           $ref = $reguest->$ref;
+          $status = $request ->query('status');
+          $ref_id = $request ->query('ref_id');
+          $payment = WalletPayment::where('ref_id' ,$ref_id)->first();
 
-           return view('user.dashboard.transactions.wallet');
-       }
+          if(!$payment){
+              $notification =[
+                  'message' => 'Your Payment Failed',
+                  'alert-type' => 'error',
+              ];
+              return redirect()->route('wallet')->with($notification);
+          }
+
+           if($status === 'cancelled'){
+               $payment ->update([
+                   'status' => 'cancelled'
+               ]);
+               $notification = [
+                   'message' => 'Your Payment cancelled successfully',
+                   'alert-type' => 'error',
+               ];
+
+               return redirect()->route('wallet')->with($notification);
+           }
+
+
+
+           $payment ->update([
+               'status' => 'success'
+           ]);
+
+           $wallet = Wallet::find($payment->wallet_id);
+           $wallet->increment('current_balance', $payment->amount);
+           $notification =[
+               'message' => 'Your Payment done successfully',
+               'alert-type' => 'success',
+           ];
+           return redirect()->route('wallet')->with($notification);
 
    }
 
