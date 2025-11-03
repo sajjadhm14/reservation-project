@@ -23,7 +23,7 @@ class Consulter extends Model implements  AuthenticatableContract
     {
         return $this->hasMany(Calender::class);
     }
-    public function reservations():hasMany
+    public function reservations():HasMany
     {
         return $this->hasMany(Reservation::class);
     }
