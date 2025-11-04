@@ -7,7 +7,7 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Add Available Time</h4>
 
-                <form class="row g-3" action="{{ route('consulter.set.calender') }}" method="POST" id="calenderForm">
+                <form class="row g-3"  action="{{ route('consulter.set.calender') }}"  method="POST" id="calenderForm">
                     @csrf
                     <div class="col-md-4">
                         <label for="date" class="form-label">Select Date</label>
@@ -48,6 +48,7 @@
                         <th>Status / Action</th>
                     </tr>
                     </thead>
+
                     <tbody id="timeTable">
                     @forelse($calenders as $calender)
                         <tr data-id="{{ $calender->id }}">
@@ -56,14 +57,16 @@
                             <td>{{ $calender->end_time }}</td>
                             <td>{{ $calender->amount ?? '—' }}</td>
                             <td>
-                                @if($calender->status === 'pending')
-                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                    @if($calender->status === 'pending')
+                                        <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                    @elseif($calender->status === 'paid')
+                                        <span class = "badge bg-gradient-light">paid</span>
+                                    @elseif( $calender->status === 'Approved')
+                                        <span class="badge bg-success">Reserved</span>
+                                    @else
+                                        <span class="badge bg-secondary">—</span>
+                                    @endif
 
-                                @elseif($calender->status === 'Approved' || $calender->status === 'paid')
-                                    <span class="badge bg-success">Reserved</span>
-                                @else
-                                    <span class="badge bg-secondary">—</span>
-                                @endif
                             </td>
                         </tr>
                     @empty
