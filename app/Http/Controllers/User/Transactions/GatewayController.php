@@ -25,16 +25,16 @@ class GatewayController extends Controller
             $user = Auth()->user();
             $wallet = Wallet::firstOrCreate(['user_id'=>$user->id]);
             $amount = $request->amount;
-            $ref_id = random_int(100000, 999999);
-            $ref_number = Str::random(6);
+            $ref_id = Str::uuid()->toString();
 
-            $payment = WalletPayment::create([
+
+            WalletPayment::create([
                'wallet_id' => $wallet->id,
                'amount' => $amount,
                'ref_id' => $ref_id,
                'user_id' =>$user->id,
                'status' => 'pending',
-               'ref_number' => $ref_number,
+               'ref_number' => null,
             ]);
 
 
@@ -73,9 +73,10 @@ class GatewayController extends Controller
            }
 
 
-
+           $ref_number = Str::random(6);
            $payment ->update([
-               'status' => 'success'
+               'status' => 'success',
+               'ref_number' => $ref_number,
            ]);
 
            $wallet = Wallet::find($payment->wallet_id);
