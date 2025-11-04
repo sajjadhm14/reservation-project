@@ -6,81 +6,80 @@ use Illuminate\Support\Facades\Route;
 
 
 //routes for user auth
-Route::prefix('user/auth')->group(function () {
+Route::prefix(prefix:'user/auth')->group(function () {
 
-    Route::controller(\App\Http\Controllers\User\Auth\RegisterController::class)->prefix('register')->group(function () {
-        Route::get('' ,  'index')->name('user.register');
-        Route::post('/post' , 'registerPost')->name('user.register.post');
+    Route::controller(controller:\App\Http\Controllers\User\Auth\RegisterController::class)->prefix(prefix:'register')->group(function () {
+        Route::get(uri:'/' ,  action:'index')->name(name:'user.register');
+        Route::post(uri:'/post' , action:'registerPost')->name('user.register.post');
     });
 
 });
 
-Route::controller(\App\Http\Controllers\User\Auth\LoginController::class)->group(function () {
-    Route::get('/' , 'index')->name('user.login');
-    Route::post('login/post' ,  'loginPost')->name('user.login.post');
+Route::controller(controller:\App\Http\Controllers\User\Auth\LoginController::class)->group(function () {
+    Route::get(uri:'/' , action:'index')->name(name:'user.login');
+    Route::post(uri:'login/post' ,  action:'loginPost')->name(name:'user.login.post');
 });
 
 //routes for user
-Route::prefix('user')->middleware('user_middleware')->group(function () {
+Route::prefix(prefix:'user')->middleware(middleware:'user_middleware')->group(function () {
     // routes for user dashboard
-    Route::controller(\App\Http\Controllers\User\Dashboard\DashboardController::class)->prefix('dashboard')->group(function () {
-        Route::get('/' , 'index')->name('user.dashboard');
-        Route::get('logout' , 'logout')->name('user.logout');
+    Route::controller(controller:\App\Http\Controllers\User\Dashboard\DashboardController::class)->prefix(prefix:'dashboard')->group(function () {
+        Route::get(uri:'/' , action:'index')->name(name:'user.dashboard');
+        Route::get(uri:'logout' , action:'logout')->name(name:'user.logout');
     });
 
-    Route::controller(\App\Http\Controllers\User\Dashboard\ReservationController::class)->prefix('reservations')->group(function () {
-        Route::get('/' , 'index')->name('reservation');
-        Route::post('/post' , 'reservationPost')->name('reservation.post');
+    Route::controller(controller:\App\Http\Controllers\User\Dashboard\ReservationController::class)->prefix(prefix:'reservations')->group(function () {
+        Route::get(uri:'/' , action:'index')->name(name:'reservation');
+        Route::post(uri:'/post' , action:'reservationPost')->name(name:'reservation.post');
     });
-    Route::controller(\App\Http\Controllers\User\Dashboard\SubmitReservationController::class)->prefix('submit')->group(function () {
-       Route::get('/' , 'index')->name('submit');
-       Route::post('/post/{id}' , 'submitPost')->name('submit.post');
-    });
-
-    Route::controller(WalletController::class)->prefix('wallet')->group(function () {
-       Route::get('/' , 'index')->name('wallet');
-       Route::get('charge' , 'walletCharge')->name('wallet.charge');
+    Route::controller(controller:\App\Http\Controllers\User\Dashboard\SubmitReservationController::class)->prefix(prefix:'submit')->group(function () {
+       Route::get(uri:'/' , action:'index')->name(name:'submit');
+       Route::post(uri:'/post/{id}' , action:'submitPost')->name(name:'submit.post');
     });
 
-    Route::controller(GatewayController::class)->prefix('payment')->group(function () {
-        Route::get('/' , 'index')->name('payment');
-        Route::post('/post', 'paymentPost')->name('payment.post');
-        Route::get('/callback',  'callback')->name('payment.callback');
+    Route::controller(controller:WalletController::class)->prefix(prefix:'wallet')->group(function () {
+       Route::get(uri:'/' , action:'index')->name(name:'wallet');
+       Route::get(uri:'charge' , action:'walletCharge')->name(name:'wallet.charge');
+    });
+
+    Route::controller(controller:GatewayController::class)->prefix(prefix:'payment')->group(function () {
+        Route::get(uri:'/' , action:'index')->name(name:'payment');
+        Route::post(uri:'/post', action:'paymentPost')->name(name:'payment.post');middleware:
+        Route::get(uri:'/callback',  action:'callback')->name(name:'payment.callback');
 
     });
 //
-    Route::controller(\App\Http\Controllers\User\Transactions\ReservationPaymentController::class)->prefix('reserve/payment')->group(function () {
-        Route::get('/' , 'index')->name('reservation.payment');
-        Route::post('/post/{id}' , 'paymentPost')->name('reservation.payment.post');
+    Route::controller(controller:\App\Http\Controllers\User\Transactions\ReservationPaymentController::class)->prefix(prefix:'reserve/payment')->group(function () {
+        Route::get(uri:'/' , action:'index')->name(name:'reservation.payment');
+        Route::post(uri:'/post/{id}' , action:'paymentPost')->name(name:'reservation.payment.post');
     });
 
 
 });
 
 // routes for consulter auth
-Route::prefix('consulter/auth')->group(function () {
-    Route::controller(\App\Http\Controllers\Consulter\Auth\ConsulterRegisterController::class)->prefix('register')->group(function () {
-        Route::get('/' ,  'index')->name('consulter.register');
-        Route::post('/post' , 'registerPost')->name('consulter.register.post');
+Route::prefix(prefix:'consulter/auth')->group(function () {
+    Route::controller(controller:\App\Http\Controllers\Consulter\Auth\ConsulterRegisterController::class)->prefix(prefix:'register')->group(function () {
+        Route::get(uri:'/' ,  action:'index')->name(name:'consulter.register');
+        Route::post(uri:'/post' , action:'registerPost')->name(name:'consulter.register.post');
     });
-    Route::controller(\App\Http\Controllers\Consulter\Auth\ConsulterLoginController::class)->prefix('login')->group(function () {
-        Route::get('' ,'index')->name('consulter.login');
-        Route::post('/post' , 'loginPost')->name('consulter.login.post');
+    Route::controller(controller:\App\Http\Controllers\Consulter\Auth\ConsulterLoginController::class)->prefix(prefix:'login')->group(function () {
+        Route::get(uri:'' ,action:'index')->name(name:'consulter.login');
+        Route::post(uri:'/post' , action:'loginPost')->name(name:'consulter.login.post');
     });
 
 });
 
 
-Route::prefix('consulter')->middleware('consulter_middleware')->group(function () {
-    Route::controller(\App\Http\Controllers\Consulter\Dashboard\ConsulterDashboardController::class)->prefix('dashboard')->group(function () {
-        Route::get('/' , 'index')->name('consulter.dashboard');
-        Route::get('/logout' , 'logout')->name('consulter.logout');
+Route::prefix(prefix:'consulter')->middleware(middleware:'consulter_middleware')->group(function () {
+    Route::controller(controller:\App\Http\Controllers\Consulter\Dashboard\ConsulterDashboardController::class)->prefix(prefix:'dashboard')->group(function () {
+        Route::get(uri:'/' , action:'index')->name(name:'consulter.dashboard');
+        Route::get(uri:'/logout' , action:'logout')->name(name:'consulter.logout');
     });
 
-    Route::controller(\App\Http\Controllers\Consulter\Dashboard\CalenderController::class)->prefix('calender')->group(function () {
-        Route::get('/' , 'index')->name('consulter.calender');
-        Route::post('/post' , 'calenderPost')->name('consulter.set.calender');
-        Route::delete('/delete/{id}' , 'destroy')->name('consulter.delete.calender');
+    Route::controller(controller:\App\Http\Controllers\Consulter\Dashboard\CalenderController::class)->prefix(prefix:'calender')->group(function () {
+        Route::get(uri:'/' , action:'index')->name(name:'consulter.calender');
+        Route::post(uri:'/post' , action:'calenderPost')->name(name:'consulter.set.calender');
+        Route::delete(uri:'/delete/{id}' , action:'destroy')->name(name:'consulter.delete.calender');
     });
-
 });
