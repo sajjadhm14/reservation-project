@@ -66,38 +66,87 @@
 
 {{--     ✅ AJAX Status Update Script --}}
     <script>
+        // Toastr config (keep as you already added)
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "10000",
+            "extendedTimeOut": "5000",
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
         function updateStatus(button, newStatus, submitId) {
             const $button = $(button);
+            const $row = $button.closest('tr');
             $button.prop('disabled', true).text('Updating...');
 
             $.ajax({
-                url: "{{ url('user/submit/post') }}/" + submitId, // ✅ correct dynamic route
-                type: "POST", // ✅ correct method
+                url: "{{ url('user/submit/post') }}/" + submitId,
+                type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}",
                     status: newStatus
                 },
                 success: function (response) {
                     if (response.status === 200) {
+                        // 1) Show toast
                         if (newStatus === 'Cancelled') {
-                            toastr.success('Reservation cancelled and time slot is now available for others!');
+                            toastr.success('Reservation Cancelled Successfully!');
                         } else {
-                            toastr.success('Status updated successfully!');
+                            toastr.success('Reservation Approved Successfully — please make it Paid!');
                         }
-                        location.reload(); // simplest way to refresh view state
+
+                        // 2) Update badge in the row
+                        const $badge = $row.find('span.badge');
+                        // remove all bg-* classes and add the one we need
+                        $badge
+                            .removeClass('bg-success bg-danger bg-primary bg-warning text-dark')
+                            .addClass(
+                                newStatus === 'Approved' ? 'bg-success' :
+                                    newStatus === 'Cancelled' ? 'bg-danger' :
+                                        newStatus === 'Paid' ? 'bg-primary' : 'bg-warning text-dark'
+                            )
+                            .text(newStatus);
+
+                        // 3) Replace action buttons (keep markup similar to your blades)
+                        let actionHtml = '';
+                        if (newStatus === 'Approved') {
+                            actionHtml = '<button class="btn btn-secondary btn-sm me-1" disabled>Approved</button>' +
+                                '<button class="btn btn-danger btn-sm" onclick="updateStatus(this, \'Cancelled\', ' + submitId + ')">Cancel</button>';
+                        } else if (newStatus === 'Cancelled') {
+                            actionHtml = '<button class="btn btn-danger btn-sm" disabled>Cancelled</button>';
+                        } else if (newStatus === 'Paid') {
+                            actionHtml = '<button class="btn btn-primary btn-sm" disabled>Paid</button>';
+                        } else {
+                            actionHtml = '<button class="btn btn-success btn-sm me-1" onclick="updateStatus(this, \'Approved\', ' + submitId + ')">Approve</button>' +
+                                '<button class="btn btn-danger btn-sm" onclick="updateStatus(this, \'Cancelled\', ' + submitId + ')">Cancel</button>';
+                        }
+                        $row.find('td').last().html(actionHtml);
+
+                        // 4) restore original button text (if still present)
+                        $button.prop('disabled', false).text(function(){
+                            // safe fallback text — depends on button type
+                            return (newStatus === 'Approved') ? 'Approve' : (newStatus === 'Cancelled' ? 'Cancel' : 'Update');
+                        });
+
                     } else {
                         toastr.error('Failed to update status!');
+                        $button.prop('disabled', false).text('Retry');
                     }
                 },
                 error: function (xhr) {
-                    console.log(xhr.responseText); // 🧠 this shows exact error in console
+                    console.log(xhr.responseText);
                     toastr.error('Something went wrong with the request.');
+                    $button.prop('disabled', false).text('Retry');
                 }
             });
         }
-
-
     </script>
+
 
 @endsection
