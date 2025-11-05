@@ -7,7 +7,8 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Add Available Time</h4>
 
-                <form class="row g-3"  action="{{ route('consulter.set.calender') }}"  method="POST" id="calenderForm">
+                {{-- ✅ Normal POST form --}}
+                <form class="row g-3" action="{{ route('consulter.set.calender') }}" method="POST">
                     @csrf
                     <div class="col-md-4">
                         <label for="date" class="form-label">Select Date</label>
@@ -31,7 +32,7 @@
                     </div>
 
                     <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-success mt-3" id="addTimeBtn">Add Time</button>
+                        <button type="submit" class="btn btn-success mt-3">Add Time</button>
                     </div>
                 </form>
 
@@ -48,25 +49,28 @@
                         <th>Status / Action</th>
                     </tr>
                     </thead>
-
-                    <tbody id="timeTable">
+                    <tbody>
                     @forelse($calenders as $calender)
-                        <tr data-id="{{ $calender->id }}">
+                        <tr>
                             <td>{{ $calender->date }}</td>
                             <td>{{ $calender->start_time }}</td>
                             <td>{{ $calender->end_time }}</td>
                             <td>{{ $calender->amount ?? '—' }}</td>
                             <td>
-                                    @if($calender->status === 'pending')
-                                        <button class="btn btn-sm btn-danger delete-btn">Delete</button>
-                                    @elseif($calender->status === 'paid')
-                                        <span class = "badge bg-gradient-light">paid</span>
-                                    @elseif( $calender->status === 'Approved')
-                                        <span class="badge bg-success">Reserved</span>
-                                    @else
-                                        <span class="badge bg-secondary">—</span>
-                                    @endif
-
+                                @if($calender->status === 'pending')
+                                    {{-- ✅ SweetAlert Delete Form --}}
+                                    <form action="{{ route('consulter.delete.calender', $calender->id) }}" method="POST" class="delete-form d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-sm btn-danger delete-btn">Delete</button>
+                                    </form>
+                                @elseif($calender->status === 'paid')
+                                    <span class="badge bg-gradient-light">Paid</span>
+                                @elseif($calender->status === 'Approved')
+                                    <span class="badge bg-success">Reserved</span>
+                                @else
+                                    <span class="badge bg-secondary">—</span>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -80,81 +84,30 @@
         </div>
     </div>
 
-    {{-- JS for form submission + delete --}}
+    {{-- ✅ SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        // ----- Handle Add Time -----
-        document.getElementById('calenderForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const form = this.closest("form");
 
-            const form = this;
-            const formData = new FormData(form);
-
-            fetch("{{ route('consulter.set.calender') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Accept": "application/json",
-                },
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        alert('✅ Time added successfully!');
-                        form.reset();
-
-                        if (data.newCalender) {
-                            const newRow = `
-                            <tr data-id="${data.newCalender.id}">
-                                <td>${data.newCalender.date}</td>
-                                <td>${data.newCalender.start_time}</td>
-                                <td>${data.newCalender.end_time}</td>
-                                <td>${data.newCalender.amount}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
-                                </td>
-                            </tr>`;
-                            document.getElementById('timeTable').insertAdjacentHTML('beforeend', newRow);
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won’t be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
                         }
-                    } else {
-                        alert('⚠️ Error adding time!');
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('❌ Something went wrong!');
-                });
-        });
-
-        // ----- Handle Delete Button -----
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('delete-btn')) {
-                const row = e.target.closest('tr');
-                const id = row.dataset.id;
-
-                if (!confirm('Are you sure you want to delete this time?')) return;
-
-                fetch(`{{ url('consulter/calender/delete') }}/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                    },
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            row.remove();
-                            alert('🗑️ Time deleted successfully!');
-                        } else {
-                            alert(data.message || '⚠️ Error deleting time!');
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('❌ Something went wrong!');
                     });
-            }
+                });
+            });
         });
     </script>
 @endsection
