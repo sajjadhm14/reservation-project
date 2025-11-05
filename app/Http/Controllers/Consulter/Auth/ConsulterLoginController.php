@@ -21,7 +21,11 @@ class ConsulterLoginController extends Controller
     {
 
         if (Auth::guard('consulter')->attempt($request->only('email', 'password'))) {
-            return redirect()->route('consulter.dashboard');
+            $notification = [
+                'message' => 'Consulter login Successfully',
+                'alert-type' => 'success',
+            ];
+            return redirect()->route('consulter.dashboard')->with($notification);
         }
 
         return redirect()->route('consulter.login');
