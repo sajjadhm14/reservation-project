@@ -76,6 +76,10 @@
 <script src="{{asset('../user/assets/vendors/core/core.js')}}"></script>
 <!-- endinject -->
 
+{{--js for sweetalert 2--}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{----}}
+
 <!-- Plugin js for this page -->
 <script src="{{asset('../user/assets/vendors/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('../user/assets/vendors/apexcharts/apexcharts.min.js')}}"></script>
