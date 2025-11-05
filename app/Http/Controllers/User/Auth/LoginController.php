@@ -13,7 +13,11 @@ class LoginController extends Controller
     public function index()
     {
         if(Auth::guard('web')->check()){
-            return redirect()->route('user.dashboard');
+            $notification =[
+                'message' => 'User Registered Successfully',
+                'alert-type' => 'success',
+            ];
+            return redirect()->route('user.dashboard')->with($notification);
         }
         return view('user.auth.login');
     }
@@ -27,6 +31,10 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('user.dashboard', absolute: false));
+        $notification = [
+            'message' => 'User login successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('user.dashboard')->with($notification);
     }
 }
