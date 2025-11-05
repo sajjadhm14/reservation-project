@@ -1,8 +1,6 @@
 @extends('consulter.dashboard.dashboard')
 
 @section('content')
-
-
     <div class="page-content">
         <div class="row">
             <div class="col-12 grid-margin">
@@ -14,14 +12,16 @@
                                  alt="profile cover"
                                  style="width: 100%; height: 200px">
                         </figure>
+
                         <div class="d-flex justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n4">
                             <div>
                                 @php
                                     use Illuminate\Support\Facades\Auth;
                                     $consulter = Auth::guard('consulter')->user();
                                 @endphp
-                                <span class="h4 ms-3 text-light">{{$consulter->name}}</span>
+                                <span class="h4 ms-3 text-light">{{ $consulter->name }}</span>
                             </div>
+
                             <div class="d-none d-md-block">
                                 <button class="btn btn-primary btn-icon-text">
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -42,8 +42,52 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-body pt-5 mt-4">
+                        <h4 class="card-title mb-4">My Paid Reservations</h4>
+
+                        @php
+                            $reservations = \App\Models\Reservation::where('status', 'paid')
+                                ->with('user')
+                                ->latest()
+                                ->get();
+                        @endphp
+
+                        @if($reservations->isEmpty())
+                            <p class="text-muted text-center mb-0">You have no paid reservations yet.</p>
+                        @else
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User Name</th>
+                                        <th>Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($reservations as $index => $reserve)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $reserve->user->name }}</td>
+                                            <td>{{ $reserve->date }}</td>
+                                            <td>{{ $reserve->start_time }}</td>
+                                            <td>{{ $reserve->end_time }}</td>
+                                            <td>
+                                                <span class="badge bg-success">Paid</span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 @endsection
-
