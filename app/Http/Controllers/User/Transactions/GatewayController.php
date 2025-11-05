@@ -16,11 +16,8 @@ use Illuminate\Support\Str;
 
 class GatewayController extends Controller
 {
-    public function index()
-    {
-        return view('user.dashboard.transactions.payment');
-    }
-   public function paymentPost(PaymentRequest $request)
+
+   public function paymentPost(PaymentRequest $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
    {
             $user = Auth()->user();
             $wallet = Wallet::firstOrCreate(['user_id'=>$user->id]);
@@ -39,26 +36,37 @@ class GatewayController extends Controller
 
 
 
-
            return view('user.dashboard.transactions.payment' , [
                'amount' => $amount,
                'ref_id' => $ref_id,
            ]);
    }
 
-   public function callback(PaymentRequest $request)
+   public function callback()
    {
-          $status = $request ->query('status');
-          $ref_id = $request ->query('ref_id');
+       return view('user.dashboard.transactions.callback');
+   }
+   public function callbackPost(PaymentRequest $request)
+   {
+          $status = $request ->get('status');
+          $ref_id = $request ->get('ref_id');
           $payment = WalletPayment::where('ref_id' ,$ref_id)->first();
 
-          if(!$payment){
-              $notification =[
-                  'message' => 'Your Payment Failed',
-                  'alert-type' => 'error',
-              ];
-              return redirect()->route('wallet')->with($notification);
-          }
+
+           if($status == 'failed'){
+
+               $payment ->update([
+                   'status' => 'failed'
+               ]);
+               $notification =[
+                   'message' => 'Your Payment Failed',
+                   'alert-type' => 'error',
+               ];
+               return redirect()->route('wallet')->with($notification);
+           }
+
+
+
 
            if($status === 'cancelled'){
                $payment ->update([
@@ -71,6 +79,17 @@ class GatewayController extends Controller
 
                return redirect()->route('wallet')->with($notification);
            }
+
+           if (!$payment) {
+               $notification = [
+                   'message' => 'Payment not found or already processed.',
+                   'alert-type' => 'error',
+               ];
+               return redirect()->route('wallet')->with($notification);
+           }
+
+
+
 
 
            $ref_number = Str::random(6);
@@ -85,7 +104,8 @@ class GatewayController extends Controller
                'message' => 'Your Payment done successfully',
                'alert-type' => 'success',
            ];
-           return view('user.dashboard.transactions.callback' , $notification);
+
+           return redirect()->route('wallet')->with($notification);
 
    }
 
