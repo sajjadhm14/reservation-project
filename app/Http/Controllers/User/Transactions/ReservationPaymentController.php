@@ -32,10 +32,20 @@ class ReservationPaymentController extends Controller
             ->first();
 
         if($wallet == null){
-            return redirect()->route('wallet.charge');
+            $notification = [
+                'message' => 'charge your wallet first' ,
+                'alert-type' => 'error'
+            ];
+            return redirect()->route('wallet.charge')->with($notification);
         }
+
         if($wallet->current_balance < $reservation->amount ){
-            return redirect('user/wallet/charge')->with('your account balance is not enough');
+
+            $notification =[
+                'message' => 'your wallet current amount is not enough charge it first',
+                'alert-type' => 'error',
+            ];
+            return redirect()->route('wallet.charge')->with($notification);
         }
         $wallet->current_balance -= $reservation->amount;
 
@@ -55,7 +65,11 @@ class ReservationPaymentController extends Controller
         $reservation->status = 'paid';
         $reservation->save();
 
+        $notification =[
+            'message'=>'Your reservation payment has been paid successfully',
+            'alert-type'=>'success'
+        ];
 
-        return redirect('user/dashboard')->with('Congratulations! Your reservation has been paid');
+        return redirect()->route('user.dashboard')->with($notification);
     }
 }
