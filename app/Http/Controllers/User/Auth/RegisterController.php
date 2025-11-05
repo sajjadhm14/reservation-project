@@ -30,7 +30,10 @@ class RegisterController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
-        return redirect(route('user.login', absolute: false));
+        $notification=[
+            'message' => 'You are registered successfully log in to your account',
+            'alert-type'=>'success'
+        ];
+        return redirect()->route('user.login')->with($notification);
     }
 }
