@@ -155,7 +155,7 @@
                     .then(res => res.json())
                     .then(resp => {
                         if (resp.success) {
-                            toastr.success(`Reserved for ${data.date} (${data.start_time} - ${data.end_time}) — Fee: ${data.amount} تومان`);
+                            toastr.success(`Reserved for ${data.date} (${data.start_time} - ${data.end_time}) — Fee: ${data.amount} dollor`);
                             card.closest('.col-md-4').fadeOut(300, function () { $(this).remove(); });
                         } else {
                             toastr.error(resp.message || 'Reservation failed!');
