@@ -19,13 +19,13 @@ class CalenderController extends Controller
 
     }
 
-    public function calenderPost(CalenderRequest $request ): \Illuminate\Http\JsonResponse
+    public function calenderPost(CalenderRequest $request ): \Illuminate\Http\RedirectResponse
     {
 
         $id = Auth::guard('consulter')->id();
         $data = $request->validated();
 
-        $calender = Calender::create([
+        Calender::create([
             'consulter_id' => $id,
             'status'=> 'pending',
             'amount' => $data['amount'],
@@ -34,17 +34,20 @@ class CalenderController extends Controller
             'end_time' => $data['end_time'],
         ]);
 
-        return response()->json([
-            'message' => 'Time Added To Calender successfully',
-            'data' => $calender,
-        ]);
+        $notification = [
+            'message' => 'Time Added Successfully',
+            'alert-type' => 'success'
+        ];
+
+        return redirect()->route('consulter.calender')->with($notification);
     }
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy($id): \Illuminate\Http\RedirectResponse
     {
         $calender = Calender::find($id)->delete();
-        return response()->json([
+        $notification = [
             'message' => 'Time Deleted Successfully',
-            'data' => $calender,
-        ]);
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('consulter.calender')->with($notification);
     }
 }
