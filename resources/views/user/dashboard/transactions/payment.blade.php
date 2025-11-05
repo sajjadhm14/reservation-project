@@ -10,12 +10,22 @@
                         <p>Amount: <strong>{{ number_format($amount) }}</strong> Rials</p>
                         <p>Ref ID: <code>{{ $ref_id }}</code></p>
 
-                        <div class="mt-4">
-                            <a href="{{ route('payment.callback', ['status' => 'success', 'ref_id' => $ref_id]) }}"
-                               class="btn btn-success px-4" id="payNowBtn">Pay Now</a>
+                        <div class="mt-4 d-flex justify-content-center gap-3">
+                            {{-- ✅ Pay Now --}}
+                            <form action="{{ route('payment.callback.post') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status" value="success">
+                                <input type="hidden" name="ref_id" value="{{ $ref_id }}">
+                                <button type="submit" class="btn btn-success px-4">Pay Now</button>
+                            </form>
 
-                            <a href="{{ route('payment.callback', ['status' => 'cancelled', 'ref_id' => $ref_id]) }}"
-                               class="btn btn-outline-danger px-4 ms-2" id="cancelBtn">Cancel</a>
+                            {{-- ❌ Cancel --}}
+                            <form action="{{ route('payment.callback.post') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status" value="cancelled">
+                                <input type="hidden" name="ref_id" value="{{ $ref_id }}">
+                                <button type="submit" class="btn btn-outline-danger px-4">Cancel</button>
+                            </form>
                         </div>
 
                         <p class="text-muted small mt-4">This is a mock payment page for testing only.</p>
@@ -31,22 +41,44 @@
     {{-- Countdown Script --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let timeLeft = 600; // 10 minutes in seconds
+            let timeLeft = 600; // 10 minutes
             const timerEl = document.getElementById('timer');
-            const cancelBtn = document.getElementById('cancelBtn');
 
             const countdown = setInterval(() => {
                 timeLeft--;
 
-                // Format minutes and seconds
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    // Auto redirect to cancel when time runs out
-                    window.location.href = cancelBtn.href;
+                    // Auto redirect to callback with failed status
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ route('payment.callback.post') }}";
+
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = '{{ csrf_token() }}';
+
+                    const status = document.createElement('input');
+                    status.type = 'hidden';
+                    status.name = 'status';
+                    status.value = 'failed';
+
+                    const ref = document.createElement('input');
+                    ref.type = 'hidden';
+                    ref.name = 'ref_id';
+                    ref.value = '{{ $ref_id }}';
+
+                    form.appendChild(csrf);
+                    form.appendChild(status);
+                    form.appendChild(ref);
+
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             }, 1000);
         });
