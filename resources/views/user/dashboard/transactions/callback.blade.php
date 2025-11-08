@@ -7,7 +7,7 @@
                 <div class="card shadow-sm border-0 rounded-3 mt-5">
                     <div class="card-body text-center py-5">
                         @php
-                            $callback =   \App\Models\WalletPayment::latest()->first();
+                            $callback =   \App\Models\WalletPayment::where('ref_id' , request('ref_id'))->first();
                         @endphp
                         {{-- ✅ Tick Icon --}}
                         <div class="mb-4">
