@@ -105,7 +105,7 @@ class GatewayController extends Controller
                'alert-type' => 'success',
            ];
 
-           return redirect()->route('wallet')->with($notification);
+           return redirect()->route('payment.callback' , ['ref_id' => $ref_id])->with($notification);
 
    }
 
