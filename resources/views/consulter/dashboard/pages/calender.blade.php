@@ -12,7 +12,10 @@
                     @csrf
                     <div class="col-md-4">
                         <label for="date" class="form-label">Select Date</label>
-                        <input type="date" id="date" name="date" class="form-control" required>
+                        <input type="date" id="date" name="date" class="form-control  @error('date') is-invalid @enderror" required>
+                        @error('date')
+                        <span class="text-danger">{{$message}}</span>
+                        @enderror
                     </div>
 
                     <div class="col-md-4">
@@ -22,7 +25,10 @@
 
                     <div class="col-md-4">
                         <label for="end_time" class="form-label">End Time</label>
-                        <input type="time" id="end_time" name="end_time" class="form-control" required>
+                        <input type="time" id="end_time" name="end_time" class="form-control @error('end_time') is-invalid @enderror" required>
+                        @error('end_time')
+                        <span class="text-danger">{{$message}}</span>
+                        @enderror
                     </div>
 
                     {{-- 💰 Amount Field --}}
