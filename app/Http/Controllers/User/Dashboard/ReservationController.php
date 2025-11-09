@@ -24,14 +24,14 @@ class ReservationController extends Controller
     public function reservationPost(ReservationRequest $request)
     {
         $user = Auth::id();
-        $request->validated();
+        $valid=$request->validated();
 
-        $exists = Reservation::where('consulter_id' , $request->consulter_id)
-                               ->where('calender_id' , $request->calender_id)
-                               ->where('amount' , $request->amount)
-                               ->where('date' , $request->date)
-                               ->where('start_time' , $request->start_time)
-                               ->where('end_time' , $request->end_time)
+        $exists = Reservation::where('consulter_id' , $valid['consulter_id'])
+                               ->where('calender_id' , $valid['calender_id'])
+                               ->where('amount' , $valid['amount'])
+                               ->where('date' , $valid['date'])
+                               ->where('start_time' , $valid['start_time'])
+                               ->where('end_time' , $valid['end_time'])
                                ->exists();
         if($exists){
             return response()->json([
@@ -42,12 +42,12 @@ class ReservationController extends Controller
 
         $reservation = Reservation::create([
            'user_id' => $user,
-           'consulter_id' => $request->consulter_id,
-            'calender_id'=> $request->calender_id,
-            'date'=> $request->date,
-            'amount'=>$request->amount,
-            'start_time' =>$request->start_time,
-            'end_time'  => $request->end_time,
+           'consulter_id' => $valid['consulter_id'],
+            'calender_id'=> $valid['calender_id'],
+            'date'=> $valid['date'],
+            'amount'=>$valid['amount'],
+            'start_time' =>$valid['start_time'],
+            'end_time'  => $valid['end_time'],
         ]);
 
         return response()->json([
