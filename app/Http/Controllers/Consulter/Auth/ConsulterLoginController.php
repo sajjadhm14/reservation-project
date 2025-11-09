@@ -12,22 +12,24 @@ class ConsulterLoginController extends Controller
     public function index()
     {
         if(Auth::guard('consulter')->check()){
+
             return redirect()->route('consulter.dashboard');
         }
+
         return view('consulter.auth.consulter-login');
     }
 
     public function loginPost(LoginRequest $request)
     {
 
-        if (Auth::guard('consulter')->attempt($request->only('email', 'password'))) {
-            $notification = [
-                'message' => 'Consulter login Successfully',
-                'alert-type' => 'success',
-            ];
-            return redirect()->route('consulter.dashboard')->with($notification);
-        }
+        $request->authenticate();
 
-        return redirect()->route('consulter.login');
+        $request->session()->regenerate();
+
+        $notification = [
+            'message' => 'Consulter login successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('consulter.dashboard')->with($notification);
     }
 }
