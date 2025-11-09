@@ -25,6 +25,9 @@ class ReservationRequest extends FormRequest
             'consulter_id' => 'required',
             'calender_id' => 'required',
             'amount' => 'required',
+            'date' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
         ];
     }
 }
