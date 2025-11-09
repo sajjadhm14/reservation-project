@@ -38,12 +38,13 @@
         </div>
     </div>
 
-    {{-- Countdown Script --}}
+    {{-- Countdown + Unload Protection Script --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let timeLeft = 600; // 10 minutes
             const timerEl = document.getElementById('timer');
 
+            // Countdown timer
             const countdown = setInterval(() => {
                 timeLeft--;
 
@@ -51,36 +52,50 @@
                 const seconds = timeLeft % 60;
                 timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
+                // Timer reached 0 => auto-fail
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    // Auto redirect to callback with failed status
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = "{{ route('payment.callback.post') }}";
-
-                    const csrf = document.createElement('input');
-                    csrf.type = 'hidden';
-                    csrf.name = '_token';
-                    csrf.value = '{{ csrf_token() }}';
-
-                    const status = document.createElement('input');
-                    status.type = 'hidden';
-                    status.name = 'status';
-                    status.value = 'failed';
-
-                    const ref = document.createElement('input');
-                    ref.type = 'hidden';
-                    ref.name = 'ref_id';
-                    ref.value = '{{ $ref_id }}';
-
-                    form.appendChild(csrf);
-                    form.appendChild(status);
-                    form.appendChild(ref);
-
-                    document.body.appendChild(form);
-                    form.submit();
+                    autoFail();
                 }
             }, 1000);
+
+            // SendBeacon when page is closed/reloaded
+            window.addEventListener('beforeunload', function () {
+                const data = new FormData();
+                data.append('_token', '{{ csrf_token() }}');
+                data.append('ref_id', '{{ $ref_id }}');
+                data.append('status', 'failed');
+                navigator.sendBeacon('{{ route('payment.callback.post') }}', data);
+            });
+
+            // Auto fail after timeout
+            function autoFail() {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('payment.callback.post') }}";
+
+                const csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = '_token';
+                csrf.value = '{{ csrf_token() }}';
+
+                const status = document.createElement('input');
+                status.type = 'hidden';
+                status.name = 'status';
+                status.value = 'failed';
+
+                const ref = document.createElement('input');
+                ref.type = 'hidden';
+                ref.name = 'ref_id';
+                ref.value = '{{ $ref_id }}';
+
+                form.appendChild(csrf);
+                form.appendChild(status);
+                form.appendChild(ref);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
         });
     </script>
 @endsection
