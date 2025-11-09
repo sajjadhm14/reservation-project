@@ -12,12 +12,9 @@ class LoginController extends Controller
 {
     public function index()
     {
+
         if(Auth::guard('web')->check()){
-            $notification =[
-                'message' => 'User Registered Successfully',
-                'alert-type' => 'success',
-            ];
-            return redirect()->route('user.dashboard')->with($notification);
+            return redirect()->route('user.dashboard');
         }
         return view('user.auth.login');
     }
