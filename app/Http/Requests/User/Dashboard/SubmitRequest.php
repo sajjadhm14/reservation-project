@@ -22,7 +22,7 @@ class SubmitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'status' => 'required|in:pending,Approved,Cancelled,paid',
         ];
     }
 }
