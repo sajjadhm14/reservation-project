@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('wallet_id')->constrained('wallets')->onDelete('cascade');
-            $table->string('amount');
-            $table->string('ref_id');
+            $table->integer('amount');
+            $table->integer('ref_id');
             $table->string('ref_number')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
