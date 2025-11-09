@@ -23,6 +23,8 @@ class PaymentRequest extends FormRequest
     {
         return [
 
+            'amount' => 'required|integer|min:1',
+
         ];
     }
 }
