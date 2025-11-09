@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\User\Transactions;
+namespace App\Http\Controllers\User\Transactions\Wallet;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Dashboard\WalletRequest;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
 
