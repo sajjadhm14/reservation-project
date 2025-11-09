@@ -22,10 +22,10 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
-            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
-            'specialty' => ['required'],
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255',
+            'password' => 'required| confirmed|min:2|max:255',
+            'specialty' => 'required|string|max:255',
         ];
     }
 }
