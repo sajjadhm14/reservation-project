@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\User\Transactions\GatewayController;
-use App\Http\Controllers\User\Transactions\WalletController;
+use App\Http\Controllers\User\Transactions\Payment\GatewayController;
+use App\Http\Controllers\User\Transactions\Wallet\WalletController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -44,13 +44,16 @@ Route::prefix('user')->middleware('user_middleware')->group(function () {
 
     Route::controller(GatewayController::class)->prefix('payment')->group(function () {
         Route::get('/' , fn()=>redirect()->route('wallet'));
-        Route::post(uri:'/post', action:'paymentPost')->name('payment.post');
         Route::get(uri:'/callback',  action:'callback')->name('payment.callback');
         Route::post(uri:'/callback/post',  action:'callbackPost')->name('payment.callback.post');
 
     });
+    Route::controller(\App\Http\Controllers\User\Transactions\Payment\StartPaymentController::class)->prefix('start-payment')->group(function () {
+        Route::get(uri:'/' , action:'index')->name('start.payment');
+        Route::post(uri:'/post' , action:'paymentPost')->name('payment.post');
+    });
 //
-    Route::controller(\App\Http\Controllers\User\Transactions\ReservationPaymentController::class)->prefix('reserve/payment')->group(function () {
+    Route::controller(\App\Http\Controllers\User\Transactions\Wallet\ReservationPaymentController::class)->prefix('reserve/payment')->group(function () {
         Route::get(uri:'/' , action:'index')->name('reservation.payment');
         Route::post(uri:'/post/{id}' , action:'paymentPost')->name('reservation.payment.post');
     });
