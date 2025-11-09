@@ -15,6 +15,8 @@ class RegisterController extends Controller
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         return view('user.auth.register');
+
+
     }
     public function registerPost(RegisterReguest $request): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
     {
@@ -30,10 +32,8 @@ class RegisterController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-        $notification=[
-            'message' => 'You are registered successfully log in to your account',
-            'alert-type'=>'success'
-        ];
-        return redirect()->route('user.login')->with($notification);
+
+
+        return redirect()->route('user.login');
     }
 }
