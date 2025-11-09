@@ -22,9 +22,9 @@ class CalenderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'date' => 'required|after_or_equal:today',
+            'start_time' => 'required|',
+            'end_time' => 'required|after:start_time',
             'amount' => 'required',
         ];
     }
