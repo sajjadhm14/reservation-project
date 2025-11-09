@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\User\Transactions;
+namespace App\Http\Controllers\User\Transactions\Wallet;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Dashboard\PayReservationRequest;
 use App\Models\Reservation;
 use App\Models\ReservationPayment;
 use App\Models\Wallet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use function Pest\Laravel\get;
 
 class ReservationPaymentController extends Controller
 {
