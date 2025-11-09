@@ -18,8 +18,9 @@ class SubmitReservationController extends Controller
 
     public function submitPost(SubmitRequest $request , $id): \Illuminate\Http\JsonResponse
     {
+        $valid = $request->validated();
         $submit = Reservation::findOrFail($id);
-        $status = $request->input("status" , 'pending');
+        $status = $valid['status'] ?? 'pending';
 
         // If status is Cancelled, delete the reservation instead of updating status
         if($status === 'Cancelled') {
