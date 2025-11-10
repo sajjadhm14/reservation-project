@@ -25,14 +25,36 @@ class CalenderController extends Controller
         $id = Auth::guard('consulter')->id();
         $data = $request->validated();
 
-        Calender::create([
-            'consulter_id' => $id,
-            'status'=> 'pending',
-            'amount' => $data['amount'],
-            'date' => $data['date'],
-            'start_time' => $data['start_time'],
-            'end_time' => $data['end_time'],
-        ]);
+        $conflict = Calender::where('date', $data['date'])
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('start_time', [$data['start_time'], $data['end_time']])
+                    ->orWhereBetween('end_time', [$data['start_time'], $data['end_time']])
+                    ->orWhere(function ($q) use ($data) {
+                        $q->where('start_time', '<=', $data['start_time'])
+                            ->where('end_time', '>=', $data['end_time']);
+                    });
+            })
+            ->exists();
+
+        if($conflict){
+            $notification = [
+                'message' => 'Time is already exist',
+                'alert-type' => 'info'
+            ];
+
+            return redirect()->route('consulter.calender')->with($notification);
+        }
+        if(!$conflict ){
+            Calender::create([
+                'consulter_id' => $id,
+                'status'=> 'pending',
+                'amount' => $data['amount'],
+                'date' => $data['date'],
+                'start_time' => $data['start_time'],
+                'end_time' => $data['end_time'],
+            ]);
+        }
+
 
         $notification = [
             'message' => 'Time Added Successfully',
