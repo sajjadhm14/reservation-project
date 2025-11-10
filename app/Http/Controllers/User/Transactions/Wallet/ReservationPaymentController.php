@@ -20,7 +20,7 @@ class ReservationPaymentController extends Controller
     }
 
 
-    public function paymentPost(PayReservationRequest $request ,$id)
+    public function paymentPost($id)
     {
         $user = Auth::guard('web')->user();
         $wallet = Wallet::where('user_id' , $user->id)->first();
