@@ -7,25 +7,21 @@
                 <div class="card shadow-sm border-0 rounded-3 mt-5">
                     <div class="card-body text-center py-5">
                         <h4 class="text-primary fw-bold mb-4">Mock Payment Gateway</h4>
+
                         <p>Amount: <strong>{{ number_format($amount) }}</strong> Rials</p>
                         <p>Ref ID: <code>{{ $ref_id }}</code></p>
 
-                        <div class="mt-4 d-flex justify-content-center gap-3">
-                            {{-- ✅ Pay Now --}}
-                            <form action="{{ route('payment.callback.post') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="success">
-                                <input type="hidden" name="ref_id" value="{{ $ref_id }}">
-                                <button type="submit" class="btn btn-success px-4">Pay Now</button>
-                            </form>
+                        {{-- ✅ Mock Payment Actions --}}
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="{{ route('payment.post', ['Status' => 'OK', 'Authority' => $ref_id ?? 'mock123']) }}"
+                               class="btn btn-success px-4 py-2 fw-bold rounded-pill">
+                                Pay Now
+                            </a>
 
-                            {{-- ❌ Cancel --}}
-                            <form action="{{ route('payment.callback.post') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="cancelled">
-                                <input type="hidden" name="ref_id" value="{{ $ref_id }}">
-                                <button type="submit" class="btn btn-outline-danger px-4">Cancel</button>
-                            </form>
+                            <a href="{{ route('payment.post', ['Status' => 'NOK', 'Authority' => $ref_id ?? 'mock123']) }}"
+                               class="btn btn-outline-danger px-4 py-2 fw-bold rounded-pill">
+                                Cancel
+                            </a>
                         </div>
 
                         <p class="text-muted small mt-4">This is a mock payment page for testing only.</p>
@@ -38,63 +34,25 @@
         </div>
     </div>
 
-    {{-- Countdown + Unload Protection Script --}}
+    {{-- Countdown + Auto Fail Script --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let timeLeft = 600; // 10 minutes
             const timerEl = document.getElementById('timer');
 
-            // Countdown timer
             const countdown = setInterval(() => {
                 timeLeft--;
-
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                // Timer reached 0 => auto-fail
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     autoFail();
                 }
             }, 1000);
 
-            // SendBeacon when page is closed/reloaded
-            window.addEventListener('beforeunload', function () {
-                const data = new FormData();
-                data.append('_token', '{{ csrf_token() }}');
-                data.append('ref_id', '{{ $ref_id }}');
-                data.append('status', 'failed');
-                navigator.sendBeacon('{{ route('payment.callback.post') }}', data);
-            });
-
-            // Auto fail after timeout
             function autoFail() {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = "{{ route('payment.callback.post') }}";
-
-                const csrf = document.createElement('input');
-                csrf.type = 'hidden';
-                csrf.name = '_token';
-                csrf.value = '{{ csrf_token() }}';
-
-                const status = document.createElement('input');
-                status.type = 'hidden';
-                status.name = 'status';
-                status.value = 'failed';
-
-                const ref = document.createElement('input');
-                ref.type = 'hidden';
-                ref.name = 'ref_id';
-                ref.value = '{{ $ref_id }}';
-
-                form.appendChild(csrf);
-                form.appendChild(status);
-                form.appendChild(ref);
-
-                document.body.appendChild(form);
-                form.submit();
+                window.location.href = "{{ route('payment.post', ['Status' => 'FAILED', 'Authority' => $ref_id ?? 'mock123', 'reservation_id' => $reservation_id ?? 0]) }}";
             }
         });
     </script>
