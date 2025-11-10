@@ -3,80 +3,102 @@
 namespace App\Http\Controllers\User\Transactions\Payment;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Dashboard\CallbackRequest;
-use App\Http\Requests\User\Dashboard\PaymentRequest;
+use App\Http\Requests\User\Transactions\CallbackRequest;
 use App\Models\Wallet;
 use App\Models\WalletPayment;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class GatewayController extends Controller
 {
+    /**
+     * Display mock callback page (for simulated gateway interaction)
+     */
+    public function callback()
+    {
+        return view('user.dashboard.transactions.callback');
+    }
 
-   public function callback()
-   {
-       return view('user.dashboard.transactions.callback');
-   }
+    /**
+     * Handle mock payment gateway callback POST request.
+     */
+    public function callbackPost(CallbackRequest $request)
+    {
+        $data = $request->validated();
+        $refId = $data['ref_id'];
+        $status = $data['status'];
 
-   public function callbackPost(CallbackRequest $request)
-   {
+        $payment = WalletPayment::where('ref_id', $refId)->lockForUpdate()->first();
 
-       $valid = $request->validated();
-       $ref_id = $valid['ref_id'];
-       $status = $valid['status'];
-       $payment = WalletPayment::where('ref_id' ,$valid['ref_id'])->firstOrFail();
+        if (! $payment) {
+            Log::warning('Payment not found or already processed', ['ref_id' => $refId]);
+            return redirect()->route('wallet')->with([
+                'message' => 'Payment not found or already processed.',
+                'alert-type' => 'error',
+            ]);
+        }
 
-       if (!$payment) {
-           $notification = [
-               'message' => 'Payment not found or already processed.',
-               'alert-type' => 'error',
-           ];
-           return redirect()->route('wallet')->with($notification);
-       }
+        // Prevent duplicate processing
+        if (in_array($payment->status, ['success', 'failed', 'cancelled'])) {
+            return redirect()->route('wallet')->with([
+                'message' => 'This payment has already been processed.',
+                'alert-type' => 'info',
+            ]);
+        }
 
-       if($status == 'failed'){
-           $payment ->update([
-               'status' => 'failed'
-           ]);
-           $notification =[
-               'message' => 'Your Payment Failed',
-               'alert-type' => 'error',
-           ];
-           return redirect()->route('wallet')->with($notification);
-       }
+        DB::beginTransaction();
+        try {
+            if ($status === 'failed') {
+                $payment->update(['status' => 'failed']);
+                DB::commit();
+                return redirect()->route('wallet')->with([
+                    'message' => 'Your payment failed.',
+                    'alert-type' => 'error',
+                ]);
+            }
 
+            if ($status === 'cancelled') {
+                $payment->update(['status' => 'cancelled']);
+                DB::commit();
 
-       if($status === 'cancelled'){
-           $payment ->update([
-               'status' => 'cancelled'
-           ]);
-           $notification = [
-               'message' => 'Your Payment cancelled successfully',
-               'alert-type' => 'error',
-           ];
-           return redirect()->route('wallet')->with($notification);
-       }
+                return redirect()->route('wallet')->with([
+                    'message' => 'Your payment was cancelled successfully.',
+                    'alert-type' => 'error',
+                ]);
+            }
 
+            // Payment success flow
+            $refNumber = Str::upper(Str::random(6));
+            $payment->update([
+                'status' => 'success',
+                'ref_number' => $refNumber,
+            ]);
 
-       $ref_number = Str::random(6);
-       $payment ->update([
-           'status' => 'success',
-           'ref_number' => $ref_number,
-       ]);
-       $wallet = Wallet::find($payment->wallet_id);
-       $wallet->increment('current_balance', $payment->amount);
-       $notification =[
-           'message' => 'Your Payment done successfully',
-           'alert-type' => 'success',
-       ];
+            $wallet = Wallet::find($payment->wallet_id);
+            if ($wallet) {
+                $wallet->increment('current_balance', $payment->amount);
+            }
 
-       dd($payment);
+            DB::commit();
 
-       return redirect()->route('payment.callback' , ['ref_id' => $ref_id])->with($notification);
+            return redirect()->route('payment.callback', ['ref_id' => $refId])->with([
+                'message' => 'Your payment was successful.',
+                'alert-type' => 'success',
+            ]);
 
-   }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Payment callback error', [
+                'ref_id' => $refId,
+                'exception' => $e->getMessage(),
+            ]);
 
-
-
-
-
+            return redirect()->route('wallet')->with([
+                'message' => 'Internal error while processing payment.',
+                'alert-type' => 'error',
+            ]);
+        }
+    }
 }
