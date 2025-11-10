@@ -27,8 +27,11 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="amount" class="form-label fw-semibold">Enter Amount to Charge ($)</label>
-                                <input type="number" name="amount" id="amount" class="form-control form-control-lg"
+                                <input type="number" name="amount" id="amount" class="form-control form-control-lg @error('amount') is-invalid @enderror"
                                        min="1" required placeholder="Enter Here">
+                                @error('amount')
+                                <span class="text-danger">{{$message}}</span>
+                                @enderror
                             </div>
 
                             <div class="mt-4 text-end">
