@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Consulter\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Consulter\Auth\RegisterRequest;
+use App\Http\Requests\Consulter\Auth\ConsulterRegisterRequest;
 use App\Models\Consulter;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -13,15 +13,23 @@ use Illuminate\Support\Facades\Hash;
 
 class ConsulterRegisterController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         return view('consulter.auth.consulter-register');
     }
 
-    public function registerPost(RegisterRequest $request): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+    /**
+     * @param ConsulterRegisterRequest $request
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
+
+    public function registerPost(ConsulterRegisterRequest $request): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
     {
 
-          $data=$request->validated();
+        $data=$request->validated();
 
 
         $consulter = Consulter::create([
@@ -34,6 +42,6 @@ class ConsulterRegisterController extends Controller
         event(new Registered($consulter));
         Auth::login($consulter);
 
-        return redirect(route('consulter.login', absolute: false));
+        return redirect()->route('consulter.login');
     }
 }
