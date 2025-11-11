@@ -12,13 +12,17 @@ class StartPaymentController extends Controller
 {
 
 
-
+    /**
+     * @param UserPaymentRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Random\RandomException
+     */
     public function paymentPost(UserPaymentRequest $request)
     {
 
         $valid = $request->validated();
         $user = Auth::guard('web')->id();
-        $wallet=Wallet::firstOrCreate(['user_id'=>$user]);
+        $wallet= Wallet::createUserWallet($user);
         $amount = $valid['amount'];
         $ref_id = random_int(100000, 999999);
         $this->createPaymentPost($ref_id ,$amount,$wallet ,$user);
@@ -26,6 +30,13 @@ class StartPaymentController extends Controller
         return redirect()->route('payment.page' , ['ref_id'=>$ref_id,'amount'=>$amount  ]);
     }
 
+    /**
+     * @param $ref_id
+     * @param $amount
+     * @param $wallet
+     * @param $user
+     * @return mixed
+     */
     private function createPaymentPost($ref_id ,$amount,$wallet ,$user)
     {
         return  WalletPayment::create([
@@ -38,6 +49,10 @@ class StartPaymentController extends Controller
         ]);
     }
 
+    /**
+     * @param UserPaymentRequest $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function paymentPage(UserPaymentRequest $request)
     {
         $amount = $request->amount;
@@ -45,6 +60,7 @@ class StartPaymentController extends Controller
         return view('user.dashboard.wallet.transactions.payment' , compact('amount','ref_id' ,));
 
     }
+
 
 
 
