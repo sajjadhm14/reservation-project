@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User\Dashboard;
+namespace App\Http\Requests\Consulter\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubmitRequest extends FormRequest
+class ConsulterCalenderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,10 @@ class SubmitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:pending,Approved,Cancelled,paid',
+            'date' => 'required|after_or_equal:today',
+            'start_time' => 'required|',
+            'end_time' => 'required|after:start_time',
+            'amount' => 'required',
         ];
     }
 }

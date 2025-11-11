@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User\Dashboard;
+namespace App\Http\Requests\Consulter\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReservationRequest extends FormRequest
+class ConsulterRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,10 @@ class ReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'consulter_id' => 'required',
-            'calender_id' => 'required',
-            'amount' => 'required',
-            'date' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255',
+            'password' => 'required| confirmed|min:2|max:255',
+            'specialty' => 'required|string|max:255',
         ];
     }
 }
