@@ -12,6 +12,10 @@ use Illuminate\Notifications\Notifiable;
 class Consulter extends Model implements  AuthenticatableContract
 {
     use Authenticatable , Notifiable;
+
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'name',
         'email',
@@ -19,12 +23,27 @@ class Consulter extends Model implements  AuthenticatableContract
         'specialty',
     ];
 
+    /**
+     * @return HasMany
+     */
     public function calender():HasMany
     {
         return $this->hasMany(Calender::class);
     }
+
+    /**
+     * @return HasMany
+     */
     public function reservations():HasMany
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function consulterList()
+    {
+        return Consulter::all();
     }
 }
