@@ -10,7 +10,7 @@
                             Charge Your Wallet
                         </h4>
 
-                        {{-- Current Wallet Info --}}
+                        {{-- Current wallet Info --}}
                         @php
                             $wallet = \App\Models\Wallet::where('user_id', auth()->id())->first();
                         @endphp

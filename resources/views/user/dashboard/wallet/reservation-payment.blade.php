@@ -22,14 +22,14 @@
                                 </thead>
                                 <tbody>
                                 @foreach($wallets as $key => $wallet)
-                                    @if($wallet->status === 'Approved' || $wallet->status === 'Paid')
+                                    @if($wallet->status == 'Approved' || $wallet->status =='Paid')
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $wallet->consulter->name ?? '-' }}</td>
                                             <td>{{ $wallet->date }}</td>
                                             <td><strong>{{ $wallet->amount }}</strong></td>
                                             <td>
-                                                @if($wallet->status === 'Approved')
+                                                @if($wallet->status =='Approved')
                                                     <form action="{{ route('reservation.payment.post', $wallet->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="wallet_id" value="{{ $wallet->id }}">
@@ -37,7 +37,7 @@
                                                             Pay Now
                                                         </button>
                                                     </form>
-                                                @elseif($wallet->status === 'Paid')
+                                                @elseif($wallet->status == 'Paid')
                                                     <span class="badge bg-primary">Paid</span>
                                                 @endif
                                             </td>
