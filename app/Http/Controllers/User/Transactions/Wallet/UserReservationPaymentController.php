@@ -11,31 +11,42 @@ use Illuminate\Support\Facades\Auth;
 
 class UserReservationPaymentController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $user = Auth::guard('web')->id();
 
-        $wallets=$this->checkUserReservation($user);
+        $wallets=Reservation::getUserReservationStatus($user);
 
         return view('user.dashboard.wallet.reservation-payment' , compact('wallets'));
     }
 
-    private function checkUserReservation($user)
-    {
-        return Reservation::where('user_id' ,$user)
-            ->where('status' , 'approved')
-            ->get();
-    }
 
-
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function paymentPost($id)
     {
-        $user = Auth::guard('web')->id();
-        $reservation = $this->getApprovedReservation($id , $user);
+        $user = Auth::guard('web')->user();
+        $reservation = Reservation::getUserPaymentStatus($user);
 
-        $wallet=$this->failWallet($user);
 
-        if($this->insufficientBalance($wallet ,$reservation->amount)){
+        $wallet = Wallet::GetUserWallet($user->id);
+        if (!$wallet){
+            $notification =[
+              'message' => 'charge your account first',
+              'alert-type' => 'warning',
+            ];
+
+            return redirect()->route('wallet.charge')->with($notification);
+        }
+
+
+        if($this->insufficientBalance($wallet  ,$reservation->amount)){
+
             $notification = [
               'message'=> 'you dont have enough balance charge your wallet',
               'alert-type' => 'error'
@@ -44,7 +55,8 @@ class UserReservationPaymentController extends Controller
         }
 
 
-       $this->proccessToPayment($wallet,$reservation,$user,$id);
+
+        $this->proccessToPayment($wallet,$reservation,$user,$id);
 
 
         $notification =[
@@ -55,35 +67,25 @@ class UserReservationPaymentController extends Controller
         return redirect()->route('user.dashboard')->with($notification);
     }
 
-    private function getApprovedReservation($id , $user): void
-    {
-        Reservation::where('id' , $id)
-            ->where('user_id' , $user->id)
-            ->where('status' , 'approved')
-            ->firstOrFail();
-    }
 
-    private function failWallet($user)
-    {
-        $wallet = Wallet::where('user_id' , $user->id)->first();
-
-        if(!$wallet){
-            $notification = [
-                'message' => 'charge your wallet first',
-                'alert-type' => 'error'
-            ];
-            return redirect()->route('wallet.charge')->with($notification);
-        }
-        return $user;
-    }
+    /**
+     * @param $wallet
+     * @param $amount
+     * @return bool
+     */
 
     private function insufficientBalance($wallet , $amount)
     {
-
-            return $wallet->current_balance < $amount;
-
+        return $wallet->current_balance < $amount;
     }
 
+    /**
+     * @param $wallet
+     * @param $reservation
+     * @param $user
+     * @param $id
+     * @return void
+     */
     private function proccessToPayment($wallet , $reservation , $user,$id)
     {
         $wallet->current_balance -= $reservation->amount;
