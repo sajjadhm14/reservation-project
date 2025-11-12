@@ -1,59 +1,64 @@
 <?php
 
 use App\Http\Controllers\User\Transactions\Payment\GatewayController;
-use App\Http\Controllers\User\Transactions\Wallet\WalletController;
+use App\Http\Controllers\User\Transactions\Wallet\UserWalletController;
 use Illuminate\Support\Facades\Route;
 
 
 //routes for user auth
-Route::prefix('user/auth')->group(function () {
 
-    Route::controller(\App\Http\Controllers\User\Auth\RegisterController::class)->prefix('register')->group(function () {
+Route::controller(\App\Http\Controllers\User\Auth\UserLoginController::class)->group(function () {
+    Route::get(uri:'/' , action:'index')->name('user.login');
+    Route::post(uri:'login/post' ,  action:'loginPost')->name('user.login.post');
+});
+
+Route::prefix('user/register')->group(function () {
+
+    Route::controller(\App\Http\Controllers\User\Auth\UserRegisterController::class)->group(function () {
         Route::get(uri:'/' ,  action:'index')->name('user.register');
         Route::post(uri:'/post' , action:'registerPost')->name('user.register.post');
     });
 
 });
 
-Route::controller(\App\Http\Controllers\User\Auth\LoginController::class)->group(function () {
-    Route::get(uri:'/' , action:'index')->name('user.login');
-    Route::post(uri:'login/post' ,  action:'loginPost')->name('user.login.post');
-});
+
 
 //routes for user
 Route::prefix('user')->middleware('user_middleware')->group(function () {
     // routes for user dashboard
-    Route::controller(\App\Http\Controllers\User\Dashboard\DashboardController::class)->prefix('dashboard')->group(function () {
+    Route::controller(\App\Http\Controllers\User\Dashboard\UserDashboardController::class)->prefix('dashboard')->group(function () {
         Route::get(uri:'/' , action:'index')->name('user.dashboard');
         Route::get(uri:'logout' , action:'logout')->name('user.logout');
     });
 
-    Route::controller(\App\Http\Controllers\User\Dashboard\ReservationController::class)->prefix('reservations')->group(function () {
+    Route::controller(\App\Http\Controllers\User\Dashboard\UserReservationController::class)->prefix('reservations')->group(function () {
         Route::get(uri:'/' , action:'index')->name('reservation');
         Route::post(uri:'/post' , action:'reservationPost')->name('reservation.post');
     });
-    Route::controller(\App\Http\Controllers\User\Dashboard\SubmitReservationController::class)->prefix('submit')->group(function () {
+    Route::controller(\App\Http\Controllers\User\Dashboard\UserSubmitReservationController::class)->prefix('submit')->group(function () {
        Route::get(uri:'/' , action:'index')->name('submit');
        Route::post(uri:'/post/{id}' , action:'submitPost')->name('submit.post');
     });
 
-    Route::controller(WalletController::class)->prefix('wallet')->group(function () {
+    Route::controller(UserWalletController::class)->prefix('wallet')->group(function () {
        Route::get(uri:'/' , action:'index')->name('wallet');
        Route::get(uri:'charge' , action:'walletCharge')->name('wallet.charge');
     });
 
-    Route::controller(GatewayController::class)->prefix('payment')->group(function () {
-        Route::get('/' , fn()=>redirect()->route('wallet'));
-        Route::get(uri:'/callback',  action:'callback')->name('payment.callback');
-        Route::post(uri:'/callback/post',  action:'callbackPost')->name('payment.callback.post');
-
-    });
-    Route::controller(\App\Http\Controllers\User\Transactions\Payment\StartPaymentController::class)->prefix('start-payment')->group(function () {
-        Route::get(uri:'/' , action:'index')->name('start.payment');
+    Route::controller(\App\Http\Controllers\User\Transactions\Payment\StartPaymentController::class)->prefix('startPayment')->group(function () {
+        Route::get(uri:'/' , action:'paymentPage')->name('payment.page');
         Route::post(uri:'/post' , action:'paymentPost')->name('payment.post');
     });
+
+    Route::controller(GatewayController::class)->prefix('gateway')->group(function () {
+        Route::get('/' , fn()=>redirect()->route('wallet'));
+        Route::get(uri:'/callback',  action:'callback')->name('gateway.callback');
+        Route::post(uri:'/callback/post',  action:'callbackPost')->name('gateway.callback.post');
+
+    });
+
 //
-    Route::controller(\App\Http\Controllers\User\Transactions\Wallet\ReservationPaymentController::class)->prefix('reserve/payment')->group(function () {
+    Route::controller(\App\Http\Controllers\User\Transactions\Wallet\UserReservationPaymentController::class)->prefix('reserve/payment')->group(function () {
         Route::get(uri:'/' , action:'index')->name('reservation.payment');
         Route::post(uri:'/post/{id}' , action:'paymentPost')->name('reservation.payment.post');
     });
