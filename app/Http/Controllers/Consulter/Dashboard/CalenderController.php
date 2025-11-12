@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class CalenderController extends Controller
 {
     /**
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -23,6 +24,8 @@ class CalenderController extends Controller
     }
 
     /**
+     * this method for validating calendar and posting data into DB
+     *
      * @param ConsulterCalenderRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -56,6 +59,8 @@ class CalenderController extends Controller
     }
 
     /**
+     * this method for creating calendar
+     *
      * @param $id
      * @param $data
      * @return mixed
@@ -74,6 +79,9 @@ class CalenderController extends Controller
     }
 
     /**
+     * this method for deleting existing calendar
+     *
+     *
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -81,14 +89,13 @@ class CalenderController extends Controller
     {
         $calender=Calender::find($id);
 
-        if($calender->status === 'Approved')
-            {
-                $notification = [
-                    'message' => 'fekkkkk nakonam ! ',
-                    'alert-type' => 'error'
-                ];
-                return redirect()->route('consulter.calender')->with($notification);
-            }
+        if($calender->status === 'Approved') {
+            $notification = [
+                'message' => 'fekkkkk nakonam ! ',
+                'alert-type' => 'error'
+            ];
+            return redirect()->route('consulter.calender')->with($notification);
+        }
 
 
 
