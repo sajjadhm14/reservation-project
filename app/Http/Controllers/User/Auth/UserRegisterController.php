@@ -3,25 +3,30 @@
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Auth\RegisterReguest;
+use App\Http\Requests\User\Auth\UserRegisterRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterController extends Controller
+class UserRegisterController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         return view('user.auth.register');
-
-
     }
-    public function registerPost(RegisterReguest $request): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+
+    /**
+     * @param UserRegisterRequest $request
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
+    public function registerPost(UserRegisterRequest $request): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
     {
         $data=$request->validated();
-
 
         $user = User::create([
             'name' => $data['name'],

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Auth\LoginRequest;
+use App\Http\Requests\User\Auth\UserLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class LoginController extends Controller
+class UserLoginController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function index()
     {
 
@@ -22,7 +25,7 @@ class LoginController extends Controller
     /**
      * @throws ValidationException
      */
-    public function loginPost(LoginRequest $request): \Illuminate\Http\RedirectResponse
+    public function loginPost(UserLoginRequest $request): \Illuminate\Http\RedirectResponse
     {
         $request->authenticate();
 
