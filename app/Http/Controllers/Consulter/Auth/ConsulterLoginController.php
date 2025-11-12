@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ConsulterLoginController extends Controller
 {
     /**
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function index()
@@ -23,6 +24,8 @@ class ConsulterLoginController extends Controller
     }
 
     /**
+     * this method for validating consulter login data
+     *
      * @param ConsulterLoginRequest $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
