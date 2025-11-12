@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Auth;
 
 class Reservation extends Model
 {
@@ -24,6 +25,17 @@ class Reservation extends Model
         'end_time',
     ];
 
+    /**
+     * @return mixed
+     */
+    public static function getUserPaidReservations ()
+    {
+        return Reservation::where('consulter_id', Auth::guard('consulter')->id())
+            ->where('status', 'paid')
+            ->with('user')
+            ->latest()
+            ->get();
+    }
     /**
      * @param $user
      * @return mixed
