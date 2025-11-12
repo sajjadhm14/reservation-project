@@ -46,12 +46,7 @@
                     <div class="card-body pt-5 mt-4">
                         <h4 class="card-title mb-4">My Paid Reservations</h4>
 
-                        @php
-                            $reservations = \App\Models\Reservation::where('status', 'paid')
-                                ->with('user')
-                                ->latest()
-                                ->get();
-                        @endphp
+
 
                         @if($reservations->isEmpty())
                             <p class="text-muted text-center mb-0">You have no paid reservations yet.</p>
