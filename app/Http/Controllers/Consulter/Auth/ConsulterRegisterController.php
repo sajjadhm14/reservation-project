@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 class ConsulterRegisterController extends Controller
 {
     /**
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -22,6 +23,8 @@ class ConsulterRegisterController extends Controller
     }
 
     /**
+     * this method for validating consulter register form
+     *
      * @param ConsulterRegisterRequest $request
      * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
      */
